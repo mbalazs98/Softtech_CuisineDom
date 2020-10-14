@@ -1,0 +1,10 @@
+venv/
+
+*.pyc
+__pycahce__/
+
+instance/
+
+dist/
+build/
+
