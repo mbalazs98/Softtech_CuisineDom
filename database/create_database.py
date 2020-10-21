@@ -53,12 +53,12 @@ def main():
                                 );"""
     sql_create_recipes_table = """CREATE TABLE IF NOT EXISTS recipes(
                                     recipe_id INTEGER PRIMARY KEY,
-                                    recipe_name text UNIQUE NOT NULL,
+                                    recipe_name text NOT NULL,
                                     cooking_method text NOT NULL,
                                     image text,
                                     string_ingredients text NOT NULL,
-                                    prep_time INTEGER,
-                                    serving INTEGER
+                                    prep_time text,
+                                    serving text
                                 );"""
     sql_create_recipe_cuisines_table = """CREATE TABLE IF NOT EXISTS recipe_cuisines(
                                     recipe_id INTEGER NOT NULL,
