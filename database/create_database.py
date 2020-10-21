@@ -29,7 +29,7 @@ def create_table(conn, create_table_sql):
         print(e)
 
 def main():
-    database = r"cuisinedom.db"
+    database = r"cuisinedom.sqlite3"
 
     sql_create_tags_table = """ CREATE TABLE IF NOT EXISTS tags(
                                    tag_id INTEGER PRIMARY KEY,
