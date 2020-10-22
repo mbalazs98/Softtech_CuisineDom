@@ -15,3 +15,18 @@ $ flask run
 $ cd frontend/
 $ expo start
 ```
+
+## Workflows
+### 1. Enter Ingredients Workflow
+<br>
+
+![Alt Text](./assets/workflow-1.gif)
+
+<br>
+
+### 2. Search Workflow
+<br>
+
+![Alt Text](./assets/workflow-2.gif)
+
+

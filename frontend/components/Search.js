@@ -57,20 +57,23 @@ import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Search = ({ route, navigation }) => {
+
     function onPressBackBtn() {
+        console.log(route.params.results)
         console.log('back button')
         navigation.navigate('Home', {
             searchQuery: route.params.searchQuery
         })
     }
+
     return (
         <View style={styles.container}>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Search results for "{route.params.searchQuery}"</Text>
-            
+
             <View style={styles.itemsContainer}>
-                
+
                 {route.params.results.map((value, index) => {
-                    return <SearchItem itemName={value[3]} itemThumb="calzonesq" />
+                    return <SearchItem itemID={value[1]} itemName={value[3]} itemThumb="calzonesq" itemDescription={value[4]} navigation={navigation} />
                 })}
             </View>
 

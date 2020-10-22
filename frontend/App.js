@@ -9,10 +9,18 @@ import { NavigationContainer } from '@react-navigation/native';
 //FiraSansCondensed_400Regular
 //FiraSansCondensed_600SemiBold
 
+// main color: #da4167
+// light blue: #e8efff
+// dark blue: #6974e8
+
+
 import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import Search from './components/Search';
+import Recipe from './components/Recipe';
 import HomeScreen from './components/HomeScreen';
+import EnterIngredients from './components/EnterIngredients';
 
 const Stack = createStackNavigator();
 
@@ -37,7 +45,7 @@ const App = () => {
 		FiraSansCondensed_400Regular
 	});
 
-	
+
 	if (!fontsLoaded) {
 		return <AppLoading />;
 	}
@@ -52,13 +60,12 @@ const App = () => {
 						headerShown: false
 					}}
 				/>
-				<Stack.Screen name="Search" component={Search} options={{headerShown: false}}/>
+				<Stack.Screen name="EnterIngredients" component={EnterIngredients} options={{headerShown: false}}/>
+				<Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
+				<Stack.Screen name="Recipe" component={Recipe} options={{ headerShown: false }} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	)
 }
-
-
-
 
 export default App;

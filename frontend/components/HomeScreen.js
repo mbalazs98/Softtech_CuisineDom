@@ -22,6 +22,7 @@ const HomeScreen = ({ navigation }) => {
 
 	function onPressEnterIngredients() {
 		console.log('enter ingredients button')
+		navigation.navigate('EnterIngredients')
 	}
 
 	function onFocusSearchBtn() {
@@ -40,6 +41,7 @@ const HomeScreen = ({ navigation }) => {
 		fetch(`http://127.0.0.1:5000/v1/recipes/${stateQuery}`)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
+				// console.log(data.results)
 				navigation.navigate('Search', {
 					searchQuery: stateQuery,
 					results: data.results

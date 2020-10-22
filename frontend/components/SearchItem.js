@@ -1,14 +1,26 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 
-const SearchItem = ({itemName, itemThumb}) => {
+const SearchItem = ({itemID, itemName, itemThumb, itemDescription, navigation}) => {
     // console.log(`../assets/${itemThumb}.png`)
+    
+    function onPressSearchItem() {
+        console.log(itemID)
+        navigation.navigate('Recipe', {
+            recipeID: itemID,
+            recipeName: itemName,
+            recipeThumb: itemThumb,
+            recipeDescription: itemDescription
+        })
+    }
     return (
+        <TouchableOpacity onPress={onPressSearchItem}>
         <View style={styles.card}>
             <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} />
             <Text style={{fontFamily: 'FiraSansCondensed_600SemiBold', fontSize: 20, paddingTop: 10, paddingBottom: 5}}>{itemName}</Text>
         </View>
+        </TouchableOpacity>
     )
 };
 
