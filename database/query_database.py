@@ -5,13 +5,15 @@ import ast
 
 def query_db():
 
-    conn = sqlite3.connect('cuisinedom.sqlite3')
+    conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
 
-    c.execute("""SELECT * FROM recipe_cuisines""")
+    c.execute("""SELECT * FROM recipes_recipe_cuisines""")
+    names = list(map(lambda x: x[0], c.description))
 
     query = c.fetchall() 
     print(query)
+    print(names)
 
     #query_dict = {q[1]: q[0] for q in query}
     #print(query_dict)
@@ -104,4 +106,4 @@ def test_rec_db():
     query = c.fetchall()[:3] 
     print(query)
     
-#query_db()
+query_db()

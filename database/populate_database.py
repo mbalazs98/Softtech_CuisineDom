@@ -8,7 +8,7 @@ import ast
 """
 
 def main():
-    conn = sqlite3.connect('cuisinedom.sqlite3')
+    conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
 
     """
@@ -20,9 +20,9 @@ def main():
     #print(records)
 
     #insert multiple records in a single query
-    c.executemany('INSERT INTO cuisines(cuisine_name) VALUES(?);',records);
+    c.executemany('INSERT INTO recipes_cuisines(cuisine_name) VALUES(?);',records);
     
-    print('We have inserted', c.rowcount, 'records to the table.')
+    print('We have inserted', c.rowcount, 'records to the cuisines table.')
     """ 
     
     """
@@ -30,8 +30,8 @@ def main():
     with open('data/ingredients.json') as f:
         data = json.load(f)
     records = [(ingredient, ) for ingredient in data['ingredients']]
-    c.executemany('INSERT INTO ingredients(ingredient_name) VALUES(?);',records);
-    print('We have inserted', c.rowcount, 'records to the table.')
+    c.executemany('INSERT INTO recipes_ingredients(ingredient_name) VALUES(?);',records);
+    print('We have inserted', c.rowcount, 'records to the ingredients table.')
     """ 
     
     """
@@ -39,8 +39,8 @@ def main():
     with open('data/tags.json') as f:
         data = json.load(f)
     records = [(tag, ) for tag in data['tags']]
-    c.executemany('INSERT INTO tags(tag_name) VALUES(?);',records);
-    print('We have inserted', c.rowcount, 'records to the table.')
+    c.executemany('INSERT INTO recipes_tags(tag_name) VALUES(?);',records);
+    print('We have inserted', c.rowcount, 'records to the tags table.')
     """ 
     
     """
@@ -60,20 +60,21 @@ def main():
         for row in reader:
             records.append((row[6], row[1], row[3], row[4], row[5], row[7]))
     
-    c.executemany('INSERT INTO recipes(recipe_name, cooking_method, image, string_ingredients, prep_time, serving) VALUES(?, ?, ?, ?, ?, ?);',records);
-    print('We have inserted', c.rowcount, 'records to the table.')
+    c.executemany('INSERT INTO recipes_recipes(recipe_name, cooking_method, image, string_ingredients, prep_time, serving) VALUES(?, ?, ?, ?, ?, ?);',records);
+    print('We have inserted', c.rowcount, 'records to the recipes table.')
     """ 
     
+    
     # Inserting recipe cuisines, recipe ingredients, recipe tags
-    c.execute("""SELECT * FROM cuisines""")
+    c.execute("""SELECT * FROM recipes_cuisines""")
     query = c.fetchall() 
     query_dict = {q[1]: q[0] for q in query}
     
-    c.execute("""SELECT * FROM tags""")
+    c.execute("""SELECT * FROM recipes_tags""")
     query = c.fetchall() 
     tag_dict = {q[1]: q[0] for q in query}
     
-    c.execute("""SELECT * FROM ingredients""")
+    c.execute("""SELECT * FROM recipes_ingredients""")
     query = c.fetchall() 
     ingred_dict = {q[1]: q[0] for q in query}
     
@@ -112,11 +113,11 @@ def main():
                     
             curr_id += 1
             
-            c.executemany('INSERT INTO recipe_cuisines(recipe_id, cuisine_id) VALUES(?, ?);', recipe_cuisines);
-            c.executemany('INSERT INTO recipe_tags(recipe_id, tag_id) VALUES(?, ?);', recipe_cuisines);
-            c.executemany('INSERT INTO recipe_ingredients(recipe_id, ingredient_id) VALUES(?, ?);', recipe_ingredients);
+            c.executemany('INSERT INTO recipes_recipe_cuisines(recipe_id_id, cuisine_id_id) VALUES(?, ?);', recipe_cuisines);
+            c.executemany('INSERT INTO recipes_recipe_tags(recipe_id_id, tag_id_id) VALUES(?, ?);', recipe_cuisines);
+            c.executemany('INSERT INTO recipes_recipe_ingredients(recipe_id_id, ingredient_id_id) VALUES(?, ?);', recipe_ingredients);
             
-    
+    """ """
     print("Commiting...")
     #commit the changes to db			
     conn.commit()
