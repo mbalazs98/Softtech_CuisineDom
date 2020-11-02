@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     # CORS
     'corsheaders',
+    'rest_framework',
     
 ]
 
