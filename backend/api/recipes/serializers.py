@@ -8,6 +8,7 @@ from recipes.models import recipe_cuisines
 from recipes.models import recipe_tags
 from recipes.models import recipe_ingredients
 from recipes.models import user_recipes
+from django.contrib.auth.models import User
  
 class tagsSerializer(serializers.ModelSerializer):
  
@@ -75,3 +76,8 @@ class user_recipesSerializer(serializers.ModelSerializer):
         model = user_recipes
         fields = ('recipe_id',
                   'user_id')                  
+                  
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email']
