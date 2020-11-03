@@ -77,7 +77,3 @@ class user_recipesSerializer(serializers.ModelSerializer):
         fields = ('recipe_id_id',
                   'user_id_id')                  
                   
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email']
