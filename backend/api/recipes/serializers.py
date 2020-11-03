@@ -1,4 +1,4 @@
-from rest_framework import serializers 
+from rest_framework import serializers
 from recipes.models import tags
 from recipes.models import ingredients
 from recipes.models import cuisines
@@ -33,7 +33,7 @@ class usersSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = users
-        fields = ('users_id',
+        fields = ('user_id',
                   'username',
                   'password',
                   'email')
