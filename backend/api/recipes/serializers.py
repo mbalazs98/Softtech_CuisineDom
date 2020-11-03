@@ -27,8 +27,8 @@ class cuisinesSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = cuisines
-        fields = ('cuisines_id',
-                  'cuisines_name')
+        fields = ('cuisine_id',
+                  'cuisine_name')
 class usersSerializer(serializers.ModelSerializer):
  
     class Meta:
@@ -53,29 +53,29 @@ class recipe_cuisinesSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = recipe_cuisines
-        fields = ('recipe_id',
-                  'cuisines_id')
+        fields = ('recipe_id_id',
+                  'cuisine_id_id')
                   
 class recipe_tagsSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = recipe_tags
-        fields = ('recipe_id',
-                  'tag_id')
+        fields = ('recipe_id_id',
+                  'tag_id_id')
 
 class recipe_ingredientsSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = recipe_ingredients
-        fields = ('recipe_id',
-                  'ingredient_id')
+        fields = ('recipe_id_id',
+                  'ingredient_id_id')
 
 class user_recipesSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = user_recipes
-        fields = ('recipe_id',
-                  'user_id')                  
+        fields = ('recipe_id_id',
+                  'user_id_id')                  
                   
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
