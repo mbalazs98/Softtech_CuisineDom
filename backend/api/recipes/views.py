@@ -23,20 +23,24 @@ def RegisterPage(request, *args, **kwargs):
         form = UsersRegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password'), email=request.POST.get('email'))
+            user.save()
     return render(request, "register.html", context)
 
 def LoginPage(request):
-    context = {"x" : "Nothing"}
+    context = {"x" : ""}
 
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        email = request.POST.get('email')
         try:
+            user = authenticate(request, username=username, password=password, email=email)
             k = users.objects.get(username=username)
-            if password == k.password:
-                context["x"] = username
+            if user is not None:
+                context["x"] = "Validation successful " + username + " logged in."
             else:
-                context["x"] = 'invalid paswword'
+                context["x"] = "Wrong password."
         except:
             context["x"] = 'No user with this username'
 
