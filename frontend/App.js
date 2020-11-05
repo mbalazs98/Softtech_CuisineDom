@@ -21,6 +21,8 @@ import Search from './components/Search';
 import Recipe from './components/Recipe';
 import HomeScreen from './components/HomeScreen';
 import EnterIngredients from './components/EnterIngredients';
+import Register from './components/Register';
+import Login from './components/Login';
 
 const Stack = createStackNavigator();
 
@@ -54,13 +56,29 @@ const App = () => {
 		<NavigationContainer>
 			<Stack.Navigator>
 				<Stack.Screen
+					name="Register"
+					component={Register}
+					options={{
+						headerShown: false
+					}}
+				/>
+				
+				<Stack.Screen
+					name="Login"
+					component={Login}
+					options={{
+						headerShown: false
+					}}
+				/>
+				<Stack.Screen
 					name="Home"
 					component={HomeScreen}
 					options={{
 						headerShown: false
 					}}
 				/>
-				<Stack.Screen name="EnterIngredients" component={EnterIngredients} options={{headerShown: false}}/>
+
+				<Stack.Screen name="EnterIngredients" component={EnterIngredients} options={{ headerShown: false }} />
 				<Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
 				<Stack.Screen name="Recipe" component={Recipe} options={{ headerShown: false }} />
 			</Stack.Navigator>

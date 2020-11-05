@@ -29,4 +29,13 @@ $ expo start
 
 ![Alt Text](./assets/workflow-2.gif)
 
+### 3.1 Register Workflow
+<br>
+
+![Alt Text](./assets/workflow-3-2.gif)
+
+### 3.2 Login Workflow
+<br>
+
+![Alt Text](./assets/workflow-3.gif)
 
