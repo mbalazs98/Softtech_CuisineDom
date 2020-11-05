@@ -33,9 +33,8 @@ def LoginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        email = request.POST.get('email')
         try:
-            user = authenticate(request, username=username, password=password, email=email)
+            user = authenticate(request, username=username, password=password)
             k = users.objects.get(username=username)
             if user is not None:
                 context["x"] = "Validation successful " + username + " logged in."
