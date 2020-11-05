@@ -5,7 +5,7 @@ from rest_framework import permissions
 from recipes.serializers import UserSerializer, usersSerializer
 from .models import users
 from .forms import UsersRegisterForm
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -37,6 +37,7 @@ def LoginPage(request):
             user = authenticate(request, username=username, password=password)
             k = users.objects.get(username=username)
             if user is not None:
+                login(request, user)
                 context["x"] = "Validation successful " + username + " logged in."
             else:
                 context["x"] = "Wrong password."
