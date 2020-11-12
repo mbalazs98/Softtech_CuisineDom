@@ -31,6 +31,9 @@ router.register(r'users', views.UserViewSet)
 urlpatterns = [
     path('register/', views.RegisterPage),
     path('login/', views.LoginPage),
+    path('user/', views.UsersPage),
+    path('user/recipes', views.UserRecipePage),
+    path('user/<id_to_delete>/delete_recipe', views.DeleteUserRecipe),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

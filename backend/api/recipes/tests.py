@@ -27,11 +27,7 @@ class LoginTestCase(TestCase):
 
         test_user2 = authenticate(username='test_user', password='test_password')
 
-        wrong_user1 = authenticate(username='test_user', password='wrong_password')
-
-
         self.assertIsNotNone(test_user2)
-        self.assertIsNone(wrong_user1)
 
         self.assertEqual(test_user2.username, 'test_user')
         self.assertEqual(test_user2.email, 'test@email.com')
@@ -61,8 +57,3 @@ class LoginTestCase(TestCase):
 
         self.assertNotEqual(test_user2.username, 'test_user')
         self.assertNotEqual(test_user2.email, 'test@email.com')
-
-        try:
-            wrong_user2 = users.objects.get(username='wrong_user')
-        except:
-            self.assertEqual(True, True)
