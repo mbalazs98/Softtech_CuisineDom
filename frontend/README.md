@@ -39,3 +39,8 @@ $ expo start
 
 ![Alt Text](./assets/workflow-3.gif)
 
+### 4 Profile Workflow
+<br>
+
+![Alt Text](./assets/workflow-4.gif)
+

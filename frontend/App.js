@@ -23,6 +23,10 @@ import HomeScreen from './components/HomeScreen';
 import EnterIngredients from './components/EnterIngredients';
 import Register from './components/Register';
 import Login from './components/Login';
+import Profile from './components/Profile';
+import EditProfile from './components/EditProfile';
+
+import { RecipeProvider } from './components/RecipeContext';
 
 const Stack = createStackNavigator();
 
@@ -46,6 +50,12 @@ const App = () => {
 		FiraSansCondensed_600SemiBold,
 		FiraSansCondensed_400Regular
 	});
+	
+	let user = {
+			name: 'Patrick',
+			email: 'patrick@cuisinedom.com',
+			password: 'userpass'
+		}
 
 
 	if (!fontsLoaded) {
@@ -53,6 +63,7 @@ const App = () => {
 	}
 
 	return (
+		<RecipeProvider value={user}>
 		<NavigationContainer>
 			<Stack.Navigator>
 				<Stack.Screen
@@ -81,8 +92,11 @@ const App = () => {
 				<Stack.Screen name="EnterIngredients" component={EnterIngredients} options={{ headerShown: false }} />
 				<Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
 				<Stack.Screen name="Recipe" component={Recipe} options={{ headerShown: false }} />
+				<Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+				<Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
 			</Stack.Navigator>
 		</NavigationContainer>
+		</RecipeProvider>
 	)
 }
 

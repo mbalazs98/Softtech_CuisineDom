@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 
 const HomeScreen = ({ navigation }) => {
@@ -23,6 +23,11 @@ const HomeScreen = ({ navigation }) => {
 	function onPressEnterIngredients() {
 		console.log('enter ingredients button')
 		navigation.navigate('EnterIngredients')
+	}
+	
+	function onPressMenu() {
+		console.log('menu button')
+		navigation.navigate('Profile')
 	}
 
 	function onFocusSearchBtn() {
@@ -56,6 +61,9 @@ const HomeScreen = ({ navigation }) => {
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<div style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} />
+				<TouchableOpacity onPress={onPressMenu} style={{position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
+					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
+				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />
 				<Button buttonStyle={styles.enterBtn}
 					onPress={onPressEnterIngredients}
@@ -159,6 +167,10 @@ const styles = StyleSheet.create({
 		paddingTop: 5,
 		paddingBottom: 5,
 		// backgroundColor: 'green'
+	},
+	menuDots: {
+		width: 70,
+		height: 70
 	}
 
 })
