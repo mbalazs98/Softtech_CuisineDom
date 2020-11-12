@@ -106,6 +106,50 @@ class LoginTestCase(TestCase):
         self.assertEqual(response.content, b'[{"recipe_id": 1, "recipe_name": "test_recipe", "cooking_method": "cook", "image": "test_picture",'
                                            b' "string_ingredients": "delicious ingredients", "prep_time": 10, "serving": 5}]')
 
+class RecipeTestCase(TestCase):
+    def test_get_by_id(self):
+        c = Client()
+        recipe = recipes.objects.create()
 
+        recipe.recipe_name = 'test'
+        recipe.cooking_mehtod = 'cook'
+        recipe.image = 'test_picture'
+        recipe.string_ingredients = 'delicious ingredients'
+        recipe.prep_time = 10
+        recipe.serving  = 5
+        recipe.save()
 
+        response = c.get('/recipes/1/recipeID')
+
+        self.assertEqual(response.status_code, 200)
+    def test_get_by_ingredient(self):
+        c = Client()
+        recipe = recipes.objects.create()
+        recipe.recipe_name = 't'
+        recipe.cooking_mehtod = 'c'
+        recipe.image = 't'
+        recipe.string_ingredients = 'd'
+        recipe.prep_time = 1
+        recipe.serving  = 5
+        recipe.save()
+
+        response = c.get('/recipes/d/ingredients')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_by_name(self):
+        c = Client()
+        recipe = recipes.objects.create()
+
+        recipe.recipe_name = 'test'
+        recipe.cooking_mehtod = 'cook'
+        recipe.image = 'test_picture'
+        recipe.string_ingredients = 'delicious ingredients'
+        recipe.prep_time = 10
+        recipe.serving  = 5
+        recipe.save()
+
+        response = c.get('/recipes/test/search')
+
+        self.assertEqual(response.status_code, 200)
 

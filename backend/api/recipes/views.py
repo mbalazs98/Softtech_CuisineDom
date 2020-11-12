@@ -53,16 +53,17 @@ def LoginPage(request):
 
 
 
-def SearchRecipeByIngredients(request):
+@api_view(['GET'])
+def SearchRecipeByIngredients(request, string_ingredients):
+    try:
+        recipe = recipes.objects.get(string_ingredients=string_ingredients)
+    except recipes.DoesNotExist:
+        return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        recipe = recipes.objects.all()
-        string_ingredient = request.query_params.get('string_ingredients', None)
-        if string_ingredient is not None:
-            recipe = recipe.filter(string_ingredient__icontains=string_ingredient)
-        recipes_serializer = recipesSerializer(recipe, many=True)
-        return JsonResponse(recipes_serializer.data, safe=False)
+        recipes_serializer = recipesSerializer(recipe)
+        return JsonResponse(recipes_serializer.data)
 
-
+@api_view(['GET', 'PUT', 'DELETE'])
 def RecipeID(request, recipe_id):
     try:
         recipe = recipes.objects.get(recipe_id=recipe_id)
@@ -82,17 +83,18 @@ def RecipeID(request, recipe_id):
         recipe.delete()
         return JsonResponse({'message': 'Recipe was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
-
+@api_view(['POST'])
 def New(request):
     if request.method == 'POST':
         recipe_data = JSONParser().parse(request)
         recipe_serializer = recipesSerializer(data=recipe_data)
         if recipe_serializer.is_valid():
             recipe_serializer.save()
+            print('asd')
             return JsonResponse(recipe_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['GET'])
 def SearchRecipeByName(request, recipe_name):
     try:
         recipe = recipes.objects.get(recipe_name=recipe_name)
@@ -101,6 +103,7 @@ def SearchRecipeByName(request, recipe_name):
     if request.method == 'GET':
         recipes_serializer = recipesSerializer(recipe)
         return JsonResponse(recipes_serializer.data)
+
 
 
 @login_required(login_url='/login')
