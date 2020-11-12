@@ -62,11 +62,6 @@ class LoginTestCase(TestCase):
     def test_client(self):
         c = Client()
 
-        response = c.get('/register/')
-        self.assertEqual(response.status_code, 200)
-        response = c.get('/login/')
-        self.assertEqual(response.status_code, 200)
-
         User.objects.create_user(username='test_user', password='test_password', email='test@email.com')
 
         recipes_user = users.objects.create()
@@ -78,6 +73,15 @@ class LoginTestCase(TestCase):
 
         logged_in = c.login(username='test_user', password='test_password')
         self.assertEqual(logged_in, True)
+
+        response = c.post('/login/', {'username': 'test_user', 'password' : 'test_password'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'{"login_succeded": true, "username": "test_user"}')
+
+        response = c.post('/register/', {'username': 'test_user2', 'password' : 'test_password2', 'email':'test@test.test'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'{"message": "Registration succeded", "username": "test_user2", "email": "test@test.test"}')
+
         response = c.get('/user/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b'{"username": "test_user", "email": "test@email.com"}')

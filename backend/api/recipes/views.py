@@ -19,41 +19,38 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = usersSerializer
     #permission_classes = [permissions.IsAuthenticated]
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def RegisterPage(request, *args, **kwargs):
-    form = UsersRegisterForm()
-    context = {'form' : form}
-
     if request.method == 'POST':
-        form = UsersRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password'), email=request.POST.get('email'))
-            user.save()
-    return render(request, "register.html", context)
+        user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password'), email=request.POST.get('email'))
+        user.save()
+        recipes_user = users.objects.create()
+        recipes_user.username = request.POST.get('username')
+        recipes_user.password = request.POST.get('password')
+        recipes_user.email = request.POST.get('email')
+        return JsonResponse({'message': 'Registration succeded', 'username': recipes_user.username, 'email': recipes_user.email})
+    else:
+        return JsonResponse({'error': 'Registration failed, post method should be used'})
 
-
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def LoginPage(request):
-    context = {"x" : ""}
-
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         try:
-            print(request.data)
             user = authenticate(request, username=username, password=password)
             k = users.objects.get(username=username)
             if user is not None:
                 login(request, user)
-                context["x"] = "Validation successful " + username + " logged in."
+                return JsonResponse({'login_succeded' : True, 'username': username})
             else:
-                context["x"] = "Wrong password."
+                return JsonResponse({'login_succeded' : False, 'error': 'Wrong password'})
         except:
-            context["x"] = 'No user with this username'
+            return JsonResponse({'login_succeded' : False, 'error': 'No user with this username'})
+    else:
+        return JsonResponse({'error': 'Login failed, post method should be used'})
 
 
-    return render(request, "login.html", context)
 
 
 def SearchRecipeByIngredients(request):
