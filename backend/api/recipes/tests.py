@@ -89,7 +89,7 @@ class LoginTestCase(TestCase):
         recipe = recipes.objects.create()
 
         recipe.recipe_name = 'test_recipe'
-        recipe.cooking_mehtod = 'cook'
+        recipe.cooking_method = 'cook'
         recipe.image = 'test_picture'
         recipe.string_ingredients = 'delicious ingredients'
         recipe.prep_time = 10
@@ -103,7 +103,7 @@ class LoginTestCase(TestCase):
         response = c.get('/user/recipes')
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'[{"recipe_id": 1, "recipe_name": "test_recipe", "cooking_method": "", "image": "test_picture",'
+        self.assertEqual(response.content, b'[{"recipe_id": 1, "recipe_name": "test_recipe", "cooking_method": "cook", "image": "test_picture",'
                                            b' "string_ingredients": "delicious ingredients", "prep_time": 10, "serving": 5}]')
 
 
