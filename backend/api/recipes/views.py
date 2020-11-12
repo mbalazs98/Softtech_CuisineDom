@@ -7,6 +7,7 @@ from .models import users, recipes, user_recipes
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 
@@ -18,6 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = usersSerializer
     #permission_classes = [permissions.IsAuthenticated]
 
+@api_view(['GET', 'POST'])
 def RegisterPage(request, *args, **kwargs):
     form = UsersRegisterForm()
     context = {'form' : form}
@@ -30,6 +32,8 @@ def RegisterPage(request, *args, **kwargs):
             user.save()
     return render(request, "register.html", context)
 
+
+@api_view(['GET', 'POST'])
 def LoginPage(request):
     context = {"x" : ""}
 
@@ -37,6 +41,7 @@ def LoginPage(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         try:
+            print(request.data)
             user = authenticate(request, username=username, password=password)
             k = users.objects.get(username=username)
             if user is not None:
@@ -119,6 +124,8 @@ def UserRecipePage(request):
 
         return JsonResponse(serialized_user_recipes.data, safe=False)
 
+
+@api_view(['POST'])
 @login_required(login_url='/login')
 def DeleteUserRecipe(request, id_to_delete):
     if request.method == 'POST':
