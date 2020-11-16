@@ -29,10 +29,17 @@ router.register(r'users', views.UserViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    path('register/', views.RegisterPage),
+    path('login/', views.LoginPage),
+    path('user/', views.UsersPage),
+    path('user/recipes', views.UserRecipePage),
+    path('user/<id_to_delete>/delete_recipe', views.DeleteUserRecipe),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-    # Application routes
-    path('api/cuisines/', views.get_cuisines, name='cuisines')
+    path('recipes/<string_ingredients>/ingredients', views.SearchRecipeByIngredients),
+    path('recipes/<recipe_id>/recipeID', views.RecipeID),
+    path('recipes/new', views.New),
+    path('recipes/<recipe_name>/search', views.SearchRecipeByName)
+    
 ]
