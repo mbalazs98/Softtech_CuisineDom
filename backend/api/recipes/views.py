@@ -106,7 +106,7 @@ def New(request):
 @api_view(['GET'])
 def SearchRecipeByName(request, recipe_name):
     recipe = recipes.objects.all()
-    recipe = recipes.filter(recipe_name__contains=recipe_name)
+    recipe = recipe.filter(recipe_name__contains=recipe_name)
     if recipe is not None:
         if request.method == 'GET':
             recipes_serializer = recipesSerializer(recipe, many=True)

@@ -31,8 +31,8 @@ class recipes(models.Model):
     cooking_method = models.TextField()
     image = models.TextField(null=True)
     string_ingredients = models.TextField(null=True)
-    prep_time = models.IntegerField(null=True)
-    serving = models.IntegerField(null=True)
+    prep_time = models.TextField(null=True)
+    serving = models.TextField(null=True)
     
 class recipe_cuisines(models.Model):
     recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE)
