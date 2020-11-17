@@ -106,12 +106,13 @@ def New(request):
 @api_view(['GET'])
 def SearchRecipeByName(request, recipe_name):
     try:
-        recipe = recipes.objects.get(recipe_name_contains=recipe_name)
+        recipes = recipes.objects.all()
+        recipes = recipes.filter(recipe_name__contains=recipe_name)
     except recipes.DoesNotExist:
         return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        recipes_serializer = recipesSerializer(recipe)
-        return JsonResponse(recipes_serializer.data)
+        recipes_serializer = recipesSerializer(recipe, many=True)
+        return JsonResponse(recipes_serializer.data, safe=False)
 
 
 @api_view(['GET'])
