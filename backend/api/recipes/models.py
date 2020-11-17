@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+
 
 class tags(models.Model):
     tag_id = models.AutoField(primary_key=True)
@@ -13,16 +13,12 @@ class ingredients(models.Model):
 class cuisines(models.Model):
     cuisine_id = models.AutoField(primary_key=True)
     cuisine_name = models.CharField(max_length=50, unique=True) 
- 
- 
-class users(AbstractUser):
+    
+class users(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)
-    email = models.CharField(max_length=100, unique=True)
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS=['username','password']
-    
+    email = models.CharField(max_length=100, unique=True) 
     
 class recipes(models.Model):
     recipe_id = models.AutoField(primary_key=True)
