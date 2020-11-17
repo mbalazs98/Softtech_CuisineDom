@@ -7,9 +7,11 @@ from .models import users, recipes, user_recipes
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.models import Token
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -24,13 +26,16 @@ def RegisterPage(request, *args, **kwargs):
     if request.method == 'POST':
         user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password'), email=request.POST.get('email'))
         user.save()
-        recipes_user = users.objects.create()
-        recipes_user.username = request.POST.get('username')
-        recipes_user.password = request.POST.get('password')
-        recipes_user.email = request.POST.get('email')
-        return JsonResponse({'message': 'Registration succeded', 'username': recipes_user.username, 'email': recipes_user.email})
+        token = Token.objects.create(user=user)
+        recipes_user = users.create(request.POST.get('username'), request.POST.get('password'), request.POST.get('email'))
+        #recipes_user.username = request.POST.get('username')
+        #recipes_user.password = request.POST.get('password')
+        #recipes_user.email = request.POST.get('email')
+        recipes_user.save()
+        return JsonResponse({'message': 'Registration succeeded', 'username': recipes_user.username
+                                , 'email': recipes_user.email, "token": token.key})
     else:
-        return JsonResponse({'error': 'Registration failed, post method should be used'})
+        return JsonResponse({'message': 'registration failed', 'error' : 'post method should be used'})
 
 @api_view(['POST'])
 def LoginPage(request):
@@ -41,14 +46,14 @@ def LoginPage(request):
             user = authenticate(request, username=username, password=password)
             k = users.objects.get(username=username)
             if user is not None:
-                login(request, user)
-                return JsonResponse({'login_succeded' : True, 'username': username})
+                token = Token.objects.get(user=user).key
+                return JsonResponse({'message' : 'login_succeeded', 'username' : username, 'token': token})
             else:
-                return JsonResponse({'login_succeded' : False, 'error': 'Wrong password'})
+                return JsonResponse({'message' : 'login_failed', 'error': 'Wrong password'})
         except:
-            return JsonResponse({'login_succeded' : False, 'error': 'No user with this username'})
+            return JsonResponse({'message' : 'login_failed', 'error': 'No user with this username'})
     else:
-        return JsonResponse({'error': 'Login failed, post method should be used'})
+        return JsonResponse({'message': 'login failed', 'error': 'post method should be used'})
 
 
 
@@ -105,12 +110,13 @@ def SearchRecipeByName(request, recipe_name):
         return JsonResponse(recipes_serializer.data)
 
 
-
-@login_required(login_url='/login')
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
 def UsersPage(request):
     return JsonResponse({'username' : request.user.username, 'email' : request.user.email})
 
-@login_required(login_url='/login')
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
 def UserRecipePage(request):
     if request.method == 'GET':
         user_recipes_id = user_recipes.objects.filter(user_id_id=request.user.id)
@@ -126,7 +132,7 @@ def UserRecipePage(request):
 
 
 @api_view(['POST'])
-@login_required(login_url='/login')
+@permission_classes((IsAuthenticated,))
 def DeleteUserRecipe(request, id_to_delete):
     if request.method == 'POST':
         user_recipe_to_delete = get_object_or_404(user_recipes, id=id_to_delete)

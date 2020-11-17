@@ -18,7 +18,12 @@ class users(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)
-    email = models.CharField(max_length=100, unique=True) 
+    email = models.CharField(max_length=100, unique=True)
+
+    @classmethod
+    def create(cls, username, password, email):
+        user = cls(username=username, password=password, email=email)
+        return user
     
 class recipes(models.Model):
     recipe_id = models.AutoField(primary_key=True)
