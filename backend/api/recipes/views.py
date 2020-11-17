@@ -24,13 +24,16 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def RegisterPage(request, *args, **kwargs):
     if request.method == 'POST':
+        if request.POST.get('username') == '':
+            return JsonResponse({'message': 'registration failed', 'error': 'no username was given'})
+        if request.POST.get('password') == '':
+            return JsonResponse({'message': 'registration failed', 'error': 'no password was given'})
+        if request.POST.get('email') == '':
+            return JsonResponse({'message': 'registration failed', 'error': 'no email address was given'})
         user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password'), email=request.POST.get('email'))
         user.save()
         token = Token.objects.create(user=user)
         recipes_user = users.create(request.POST.get('username'), request.POST.get('password'), request.POST.get('email'))
-        #recipes_user.username = request.POST.get('username')
-        #recipes_user.password = request.POST.get('password')
-        #recipes_user.email = request.POST.get('email')
         recipes_user.save()
         return JsonResponse({'message': 'Registration succeeded', 'username': recipes_user.username
                                 , 'email': recipes_user.email, "token": token.key})
