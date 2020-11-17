@@ -111,7 +111,7 @@ def SearchRecipeByName(request, recipe_name):
     except recipes.DoesNotExist:
         return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        recipes_serializer = recipesSerializer(recipe, many=True)
+        recipes_serializer = recipesSerializer(recipes, many=True)
         return JsonResponse(recipes_serializer.data, safe=False)
 
 
