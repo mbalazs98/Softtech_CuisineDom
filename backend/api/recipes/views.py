@@ -58,17 +58,18 @@ def LoginPage(request):
 
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def SearchRecipeByIngredients(request, string_ingredients):
     try:
         recipe = recipes.objects.get(string_ingredients=string_ingredients)
     except recipes.DoesNotExist:
         return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'GET':
+    if request.method == 'POST':
         recipes_serializer = recipesSerializer(recipe)
         return JsonResponse(recipes_serializer.data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((IsAuthenticated,))
 def RecipeID(request, recipe_id):
     try:
         recipe = recipes.objects.get(recipe_id=recipe_id)
@@ -89,20 +90,20 @@ def RecipeID(request, recipe_id):
         return JsonResponse({'message': 'Recipe was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
 def New(request):
     if request.method == 'POST':
         recipe_data = JSONParser().parse(request)
         recipe_serializer = recipesSerializer(data=recipe_data)
         if recipe_serializer.is_valid():
             recipe_serializer.save()
-            print('asd')
             return JsonResponse(recipe_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def SearchRecipeByName(request, recipe_name):
     try:
-        recipe = recipes.objects.get(recipe_name=recipe_name)
+        recipe = recipes.objects.get(recipe_name_contains=recipe_name)
     except recipes.DoesNotExist:
         return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
