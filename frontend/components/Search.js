@@ -100,12 +100,15 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 25,
-        paddingTop: 50
+        paddingTop: 50,
     },
     itemsContainer: {
         paddingLeft: 20,
         paddingRight: 20,
-
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignContent: 'flex-start',
     },
     icon: {
 

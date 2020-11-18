@@ -40,7 +40,10 @@ const styles = StyleSheet.create({
         padding: 10,
         width: 140,
         borderRadius: 10,
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)'
+        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
+        marginLeft: 7.5,
+        marginRight: 7.5,
+        marginBottom: 30
     }
 })
 
