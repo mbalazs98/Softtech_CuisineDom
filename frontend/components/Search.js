@@ -73,7 +73,7 @@ const Search = ({ route, navigation }) => {
             <View style={styles.itemsContainer}>
 
                 {route.params.results.map((value, index) => {
-                    return <SearchItem itemID={value[1]} itemName={value[3]} itemThumb="calzonesq" itemDescription={value[4]} navigation={navigation} />
+                    return <SearchItem itemID={value[0]} itemName={value[1]} itemThumb="calzonesq" itemDescription={value[2]} navigation={navigation} />
                 })}
             </View>
 

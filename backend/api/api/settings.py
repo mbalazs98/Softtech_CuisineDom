@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     # Recipes application 
     'recipes.apps.RecipesConfig',
     # CORS
-    #'corsheaders',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken'
 ]
@@ -56,7 +56,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     # CORS
-    #'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -138,5 +138,5 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8081',
+    'http://localhost:19006',
 )

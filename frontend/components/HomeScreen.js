@@ -43,7 +43,16 @@ const HomeScreen = ({ navigation }) => {
 
 	function onPressSearchBtn() {
 		console.log(stateQuery)
-		fetch(`http://127.0.0.1:5000/v1/recipes/${stateQuery}`)
+		fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
+			.then((response) => response.json())//.then(data => console.log(data))
+			.then(data => {
+				// console.log(data.results)
+				navigation.navigate('Search', {
+					searchQuery: stateQuery,
+					results: data
+				})
+			})
+		/*fetch(`http://127.0.0.1:5000/v1/recipes/${stateQuery}`)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
 				// console.log(data.results)
@@ -51,7 +60,8 @@ const HomeScreen = ({ navigation }) => {
 					searchQuery: stateQuery,
 					results: data.results
 				})
-			})
+			})*/
+
 	}
 
 	function onSearchChange(e) {
