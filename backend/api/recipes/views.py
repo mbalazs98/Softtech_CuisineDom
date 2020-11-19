@@ -139,9 +139,9 @@ def New(request):
         return JsonResponse(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def SearchRecipeByName(request,singleton:MySingleton,recipe_name:string):
+def SearchRecipeByName(request, recipe_name:string):
     recipe = recipes.objects.all()
-    recipe = recipe.filter(recipe_name__contains=recipe_name)
+    recipe = recipe.filter(recipe_name__contains=recipe_name)[:500]
     if recipe is not None:
         if request.method == 'GET':
             recipes_serializer = recipesSerializer(recipe, many=True)

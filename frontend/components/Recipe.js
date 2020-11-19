@@ -16,13 +16,21 @@ const Recipe = ({ route, navigation }) => {
             </TouchableOpacity>
             {/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.recipeContainer}>
-                <Image source={require(`../assets/${route.params.recipeThumb}.png`)} style={styles.image} />
+				<View>
+					<Image source={route.params.recipeThumb} style={styles.image} />
+					<Text style={styles.recipeTime}><b>{route.params.recipeServing}</b></Text>
+				</View>
                 <View style={styles.recipeMainInfo}>
                     <Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
                     <Text style={styles.recipeTime}>Time to make: <b>{route.params.recipeTime}</b></Text>
+                    
+                </View>
+				<View style={styles.recipeDescriptionContainer}>
+                    <Text style={styles.recipeDescriptionTitle}>Ingredients</Text>
+                    <Text style={styles.recipeDescriptionText}>{route.params.recipeIngredients}</Text>
                 </View>
                 <View style={styles.recipeDescriptionContainer}>
-                    <Text style={styles.recipeDescriptionTitle}>Description</Text>
+                    <Text style={styles.recipeDescriptionTitle}>Instructions</Text>
                     <Text style={styles.recipeDescriptionText}>{route.params.recipeDescription}</Text>
                 </View>
             </View>
@@ -53,6 +61,7 @@ const styles = StyleSheet.create({
     recipeContainer: {
         paddingLeft: 20,
         paddingRight: 20,
+		paddingTop: 30,
         flexDirection: 'row',
         flexWrap: 'wrap',
         // backgroundColor: 'green'
@@ -73,7 +82,9 @@ const styles = StyleSheet.create({
     },
     recipeTitle: {
         fontFamily: 'FiraSansCondensed_600SemiBold',
-        fontSize: 32
+        fontSize: 32,
+		paddingTop: 15,
+		paddingBottom: 10,
         // backgroundColor: 'red'
     },
     recipeTime: {

@@ -7,17 +7,31 @@ const SearchItem = ({itemID, itemName, itemThumb, itemDescription, navigation}) 
     
     function onPressSearchItem() {
         console.log(itemID)
-        navigation.navigate('Recipe', {
+		fetch(`http://127.0.0.1:8000/recipes/${itemID}/recipeID`)
+			.then((response) => response.json())//.then(data => console.log(data))
+			.then(data => {
+				// console.log(data.results)
+				navigation.navigate('Recipe', {
+					recipeID: data['recipe_id'],
+					recipeName: data['recipe_name'],
+					recipeThumb: data['image'],
+					recipeTime: data['prep_time'],
+					recipeServing: data['serving'],
+					recipeIngredients: data['string_ingredients'],
+					recipeDescription: data['cooking_method']
+				})
+			})
+        /*navigation.navigate('Recipe', {
             recipeID: itemID,
             recipeName: itemName,
             recipeThumb: itemThumb,
             recipeDescription: itemDescription
-        })
+        })*/
     }
     return (
         <TouchableOpacity onPress={onPressSearchItem}>
         <View style={styles.card}>
-            <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} />
+            <Image source={itemThumb} style={styles.image} />
             <Text style={{fontFamily: 'FiraSansCondensed_600SemiBold', fontSize: 20, paddingTop: 10, paddingBottom: 5}}>{itemName}</Text>
         </View>
         </TouchableOpacity>
