@@ -2,11 +2,49 @@ import React, { useState } from 'react';
 
 import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { Button, Input } from 'react-native-elements';
+//import Cookies from 'js-cookie';
 
 const Register = ({navigation}) => {
 
+    const [stateUsername, setStateUsername] = useState("");
+    const [statePassword, setStatePassword] = useState("");
+    const [stateEmail, setStateEmail] = useState("");
+    const [stateMsg, setStateMsg] = useState("");
+
     function onPressRegister() {
-        navigation.navigate('Home')
+        // console.log(stateUsername)
+        // console.log(statePassword)
+        // console.log(stateEmail)
+        let status;
+        fetch('http://127.0.0.1:8000/register/', {
+            method: 'POST',
+            body: JSON.stringify({
+                'username': stateUsername,
+                'email': stateEmail,
+                'password': statePassword
+            }),
+            //credentials: 'same-origin',
+            headers: {
+                //"X-CSRFToken": Cookies.get("csrftoken"),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(data => {
+            status = data.status;
+            return data.json()
+        }).then(data=> {
+            if(status == 400) {
+                console.log(data.error)
+                setStateMsg(data.error)
+            } else {
+                console.log("success")
+                console.log(data);
+                //navigation.navigate('Home')
+            }
+        })
+ //       navigation.navigate('Home')
+ 
     }
 
     
@@ -14,22 +52,36 @@ const Register = ({navigation}) => {
         navigation.navigate('Login');
     }
 
+    function onUsernameChange(e) {
+		setStateUsername(e.target.value)
+    }
+    
+    function onPasswordChange(e) {
+		setStatePassword(e.target.value)
+    }
+    
+    function onEmailChange(e) {
+		setStateEmail(e.target.value)
+	}
 
     return (
         <ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
             <div style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} />
             <Image source={require('../assets/logo2.png')} style={styles.image} />
             <View style={styles.formContainer}>
+                <Text style={styles.errorMsg}>{stateMsg}</Text>
                 <Input
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
                     placeholder="Enter your username"
                     label="Username"
+                    onChange={onUsernameChange}
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="Username Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
+                onChange={onEmailChange}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -39,6 +91,7 @@ const Register = ({navigation}) => {
                     accessibilityLabel="Email Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
+                onChange={onPasswordChange}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -142,6 +195,12 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 5,
         // backgroundColor: 'green'
+    },
+    errorMsg: {
+        color: 'red',
+        maxWidth: 260,
+        textAlign: 'center',
+        marginBottom: 15
     }
 
 })
