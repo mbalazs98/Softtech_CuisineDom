@@ -1,25 +1,36 @@
 import json
+from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
 from rest_framework.parsers import JSONParser
 from recipes.serializers import UserSerializer, usersSerializer, recipesSerializer
 from .models import users, recipes, user_recipes
 from .forms import UsersRegisterForm
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from pycdi import Inject, Producer
+from pycdi.utils import Singleton
 import string
+import random
+@Singleton()
+class MySingleton():
+    pass
+
+#@Producer(string)
+def get_a_string():
+    return random.choice(string.ascii_letters)
 
 @Producer(_context='login_failed')
 def get_login_failed():
     return 'login failed'
 
 @Producer(_context='registration_failed')
-def get_registration_failed():
+def get_login_failed():
     return 'registration failed'
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -128,7 +139,7 @@ def New(request):
         return JsonResponse(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def SearchRecipeByName(request,recipe_name:string):
+def SearchRecipeByName(request,singleton:MySingleton,recipe_name:string):
     recipe = recipes.objects.all()
     recipe = recipe.filter(recipe_name__contains=recipe_name)
     if recipe is not None:
