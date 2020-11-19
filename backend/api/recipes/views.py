@@ -16,13 +16,22 @@ from rest_framework.authtoken.models import Token
 from pycdi import Inject, Producer
 from pycdi.utils import Singleton
 import string
+import random
 @Singleton()
 class MySingleton():
     pass
 
-@Producer(string)
+#@Producer(string)
 def get_a_string():
     return random.choice(string.ascii_letters)
+
+@Producer(_context='login_failed')
+def get_login_failed():
+    return 'login failed'
+
+@Producer(_context='registration_failed')
+def get_login_failed():
+    return 'registration failed'
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -32,8 +41,9 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = usersSerializer
     #permission_classes = [permissions.IsAuthenticated]
 
+@Inject(failed_register = 'registration_failed')
 @api_view(['POST'])
-def RegisterPage(request, *args, **kwargs):
+def RegisterPage(request, failed_register:str, *args, **kwargs):
 
     if request.method == 'POST':
         if request.body:
@@ -41,11 +51,11 @@ def RegisterPage(request, *args, **kwargs):
         else:
             return JsonResponse({'message': 'Error! Expected POST body, found None.' }, status=status.HTTP_400_BAD_REQUEST)
         if body.get('username') == '':
-            return JsonResponse({'message': 'registration failed', 'error': 'no username was given'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': failed_register, 'error': 'no username was given'}, status=status.HTTP_400_BAD_REQUEST)
         if body.get('password') == '':
-            return JsonResponse({'message': 'registration failed', 'error': 'no password was given'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': failed_register, 'error': 'no password was given'}, status=status.HTTP_400_BAD_REQUEST)
         if body.get('email') == '':
-            return JsonResponse({'message': 'registration failed', 'error': 'no email address was given'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': failed_register, 'error': 'no email address was given'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             user = User.objects.create_user(username=body.get('username'), password=body.get('password'), email=body.get('email'))
@@ -60,8 +70,9 @@ def RegisterPage(request, *args, **kwargs):
     else:
         return JsonResponse({'message': 'registration failed', 'error' : 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
 
+@Inject(failed_login = 'login_failed')
 @api_view(['POST'])
-def LoginPage(request):
+def LoginPage(request, failed_login:str):
     if request.method == 'POST':
         if request.body:
             body = json.loads(request.body)
@@ -76,11 +87,11 @@ def LoginPage(request):
                 token = Token.objects.get(user=user).key
                 return JsonResponse({'message' : 'login_succeeded', 'username' : username, 'token': token})
             else:
-                return JsonResponse({'message' : 'login_failed', 'error': 'Wrong password'}, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'message' : failed_login, 'error': 'Wrong password'}, status=status.HTTP_400_BAD_REQUEST)
         except:
-            return JsonResponse({'message' : 'login_failed', 'error': 'No user with this username'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message' : failed_login, 'error': 'No user with this username'}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        return JsonResponse({'message': 'login failed', 'error': 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': failed_login, 'error': 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
