@@ -50,7 +50,7 @@
 // export default EnterIngredients;
 
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
 import SearchItem from './SearchItem';
 
 import { Button } from 'react-native-elements';
@@ -69,13 +69,15 @@ const Search = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Search results for "{route.params.searchQuery}"</Text>
-
-            <View style={styles.itemsContainer}>
+			
+            <ScrollView >
+			<View style={styles.itemsContainer}>
 
                 {route.params.results.map((value, index) => {
-                    return <SearchItem itemID={value[0]} itemName={value[1]} itemThumb="calzonesq" itemDescription={value[2]} navigation={navigation} />
+                    return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
                 })}
-            </View>
+			</View>
+            </ScrollView>
 
             <Button buttonStyle={styles.backBtn}
                 containerStyle={styles.backBtnContainer}
@@ -103,9 +105,9 @@ const styles = StyleSheet.create({
         paddingTop: 50,
     },
     itemsContainer: {
-        paddingLeft: 20,
-        paddingRight: 20,
-        flex: 1,
+        paddingLeft: 10,
+        paddingRight: 10,
+        //flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignContent: 'flex-start',
@@ -114,15 +116,17 @@ const styles = StyleSheet.create({
 
     },
     backBtnContainer: {
+		//flex: 1,
         position: 'absolute',
         left: 30,
-        top: 'auto',
+        //top: 'auto',
         bottom: 50,
         borderRadius: 14,
         boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
 
     },
     backBtn: {
+		
         // width: 200,
         padding: 10,
         paddingLeft: 15,
