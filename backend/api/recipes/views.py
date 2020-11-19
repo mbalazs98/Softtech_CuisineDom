@@ -1,5 +1,4 @@
 import json
-from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
 from rest_framework.parsers import JSONParser
@@ -7,30 +6,20 @@ from recipes.serializers import UserSerializer, usersSerializer, recipesSerializ
 from .models import users, recipes, user_recipes
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from pycdi import Inject, Producer
-from pycdi.utils import Singleton
 import string
-import random
-@Singleton()
-class MySingleton():
-    pass
-
-#@Producer(string)
-def get_a_string():
-    return random.choice(string.ascii_letters)
 
 @Producer(_context='login_failed')
 def get_login_failed():
     return 'login failed'
 
 @Producer(_context='registration_failed')
-def get_login_failed():
+def get_registration_failed():
     return 'registration failed'
 
 class UserViewSet(viewsets.ModelViewSet):
