@@ -12,6 +12,16 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
+from pycdi import Inject, Producer
+from pycdi.utils import Singleton
+import string
+@Singleton()
+class MySingleton():
+    pass
+
+@Producer(string)
+def get_a_string():
+    return random.choice(string.ascii_letters)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -104,7 +114,7 @@ def New(request):
         return JsonResponse(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def SearchRecipeByName(request, recipe_name):
+def SearchRecipeByName(request,singleton:MySingleton,recipe_name:string):
     recipe = recipes.objects.all()
     recipe = recipe.filter(recipe_name__contains=recipe_name)
     if recipe is not None:
