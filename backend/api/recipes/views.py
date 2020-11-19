@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
@@ -23,28 +24,41 @@ class UserViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def RegisterPage(request, *args, **kwargs):
+
     if request.method == 'POST':
-        if request.POST.get('username') == '':
-            return JsonResponse({'message': 'registration failed', 'error': 'no username was given'})
-        if request.POST.get('password') == '':
-            return JsonResponse({'message': 'registration failed', 'error': 'no password was given'})
-        if request.POST.get('email') == '':
-            return JsonResponse({'message': 'registration failed', 'error': 'no email address was given'})
-        user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password'), email=request.POST.get('email'))
-        user.save()
+        if request.body:
+            body = json.loads(request.body)
+        else:
+            return JsonResponse({'message': 'Error! Expected POST body, found None.' }, status=status.HTTP_400_BAD_REQUEST)
+        if body.get('username') == '':
+            return JsonResponse({'message': 'registration failed', 'error': 'no username was given'}, status=status.HTTP_400_BAD_REQUEST)
+        if body.get('password') == '':
+            return JsonResponse({'message': 'registration failed', 'error': 'no password was given'}, status=status.HTTP_400_BAD_REQUEST)
+        if body.get('email') == '':
+            return JsonResponse({'message': 'registration failed', 'error': 'no email address was given'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.create_user(username=body.get('username'), password=body.get('password'), email=body.get('email'))
+            recipes_user = users.create(body.get('username'), body.get('password'), body.get('email'))
+            user.save()
+            recipes_user.save()
+        except Exception as e:
+            return JsonResponse({'message': 'Registration failed', 'error': 'An account with the same username/email already exists.' }, status=status.HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
-        recipes_user = users.create(request.POST.get('username'), request.POST.get('password'), request.POST.get('email'))
-        recipes_user.save()
         return JsonResponse({'message': 'Registration succeeded', 'username': recipes_user.username
-                                , 'email': recipes_user.email, "token": token.key})
+                                , 'email': recipes_user.email, "token": token.key}, status=status.HTTP_201_CREATED)
     else:
-        return JsonResponse({'message': 'registration failed', 'error' : 'post method should be used'})
+        return JsonResponse({'message': 'registration failed', 'error' : 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def LoginPage(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        if request.body:
+            body = json.loads(request.body)
+        else:
+            return JsonResponse({'message': 'Error! Expected POST body, found None.'}, status=status.HTTP_400_BAD_REQUEST)
+        username = body.get('username')
+        password = body.get('password')
         try:
             user = authenticate(request, username=username, password=password)
             k = users.objects.get(username=username)
@@ -52,11 +66,11 @@ def LoginPage(request):
                 token = Token.objects.get(user=user).key
                 return JsonResponse({'message' : 'login_succeeded', 'username' : username, 'token': token})
             else:
-                return JsonResponse({'message' : 'login_failed', 'error': 'Wrong password'})
+                return JsonResponse({'message' : 'login_failed', 'error': 'Wrong password'}, status=status.HTTP_400_BAD_REQUEST)
         except:
-            return JsonResponse({'message' : 'login_failed', 'error': 'No user with this username'})
+            return JsonResponse({'message' : 'login_failed', 'error': 'No user with this username'}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        return JsonResponse({'message': 'login failed', 'error': 'post method should be used'})
+        return JsonResponse({'message': 'login failed', 'error': 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -142,4 +156,6 @@ def DeleteUserRecipe(request, id_to_delete):
     if request.method == 'POST':
         user_recipe_to_delete = get_object_or_404(user_recipes, id=id_to_delete)
         user_recipe_to_delete.delete()
-        return HttpResponse('Recipe from user database is deleted successfully.')
+        return JsonResponse({'message': 'Recipe from user database is deleted successfully.'})
+    else:
+        return JsonResponse({'message': 'Deletion failed', 'error' : 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)        
