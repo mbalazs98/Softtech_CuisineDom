@@ -41,5 +41,5 @@ urlpatterns = [
     path('recipes/<recipe_id>/recipeID', views.RecipeID),
     path('recipes/new', views.New),
     path('recipes/<recipe_name>/search', views.SearchRecipeByName)
-    
+
 ]
