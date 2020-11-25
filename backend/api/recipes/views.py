@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
 from rest_framework.parsers import JSONParser
 from recipes.serializers import usersSerializer, recipesSerializer
-from .models import users, recipes, user_recipes
+from .models import users, recipes, user_recipes, ingredients, recipe_ingredients
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view, permission_classes
@@ -99,9 +99,11 @@ def LoginPage(request, failed_login: str):
 @api_view(['POST'])
 def SearchRecipeByIngredients(request, string_ingredients):
     try:
-        recipe = recipes.objects.get(string_ingredients=string_ingredients)
-    except recipes.DoesNotExist:
-        return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        ingredient_id = ingredients.objects.filter(ingredient_name__in=ingredient_name)
+        recipe_id = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_id)
+        recipe = recipes.objects.filter(recipe_id__in=recipe_id)
+    except:
+        return JsonResponse({'message': 'Recipe with these ingredients does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'POST':
         recipes_serializer = recipesSerializer(recipe)
         return JsonResponse(recipes_serializer.data)
