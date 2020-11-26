@@ -70,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
-				<div style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} />
+				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
 				<TouchableOpacity onPress={onPressMenu} style={{position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
 					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
 				</TouchableOpacity>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
 	searchInput: {
 		// backgroundColor: 'pink'
 		color: '#fff',
-		outlineWidth: 0,
+		//outlineWidth: 0,
 		fontSize: 20
 
 	},
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
 		display: 'none'
 	},
 	searchInputContainer: {
-		border: 0,
+		borderWidth: 0,
 		paddingLeft: 10,
 		paddingRight: 10,
 		paddingTop: 5,

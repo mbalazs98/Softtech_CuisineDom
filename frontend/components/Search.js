@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
         //top: 'auto',
         bottom: 50,
         borderRadius: 14,
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
 
     },
     backBtn: {
@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: '#da4167',
-        // boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)'
     },
 });
 

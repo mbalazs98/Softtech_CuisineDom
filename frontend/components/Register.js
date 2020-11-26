@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Image, ImageBackground, ScrollView } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 //import Cookies from 'js-cookie';
+import Constants from "expo-constants";
+const { manifest } = Constants;
 
 const Register = ({navigation}) => {
 
@@ -16,6 +18,11 @@ const Register = ({navigation}) => {
         // console.log(statePassword)
         // console.log(stateEmail)
         let status;
+        const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+            ? manifest.debuggerHost.split(`:`).shift().concat(`:8000`)
+            : `api.example.com`;
+            console.log(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))
+            setStateMsg(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))
         fetch('http://127.0.0.1:8000/register/', {
             method: 'POST',
             body: JSON.stringify({
@@ -40,7 +47,7 @@ const Register = ({navigation}) => {
             } else {
                 console.log("success")
                 console.log(data);
-                //navigation.navigate('Home')
+                navigation.navigate('Home')
             }
         })
  //       navigation.navigate('Home')
@@ -65,10 +72,11 @@ const Register = ({navigation}) => {
 	}
 
     return (
+        <ScrollView>
         <ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
-            <div style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} />
+            <View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
             <Image source={require('../assets/logo2.png')} style={styles.image} />
-            <View style={styles.formContainer}>
+            <ScrollView style={styles.formContainer}>
                 <Text style={styles.errorMsg}>{stateMsg}</Text>
                 <Input
                     //inputContainerStyle={styles.searchInputContainer}
@@ -115,8 +123,9 @@ const Register = ({navigation}) => {
                     title="Already have an account? Login"
                     titleStyle={{ color: '#6974e8', fontFamily: "FiraSansCondensed_400Regular", fontSize: 14 }}
                     accessibilityLabel="Login Button" />
-            </View>
+            </ScrollView>
         </ImageBackground>
+        </ScrollView>
     )
 };
 
@@ -181,7 +190,6 @@ const styles = StyleSheet.create({
     searchInput: {
         // backgroundColor: 'pink'
         color: '#000',
-        //    outlineWidth: 0,
         fontSize: 20
 
     },
@@ -189,7 +197,7 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     searchInputContainer: {
-        border: 0,
+        borderWidth: 0,
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 5,

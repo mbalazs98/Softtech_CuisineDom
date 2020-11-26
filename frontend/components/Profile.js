@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         top: 'auto',
         bottom: 50,
         borderRadius: 14,
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
 
     },
 	editBtnContainer: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         top: 'auto',
         bottom: 50,
         borderRadius: 14,
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
 
     },
 	addBtn: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: '#da4167',
-        // boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)'
+        
     },
 	editBtn: {
         // width: 200,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: '#b8cdfc',
-        // boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)'
+        
     },
     backToHome: {
         // flex: 1,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
         borderRadius: 10,
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.2)'
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.2)'
     },
     recipeMainInfo: {
         paddingLeft: 20,

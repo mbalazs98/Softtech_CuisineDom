@@ -91,7 +91,7 @@ const EditProfile = ({navigation}) => {
                     accessibilityLabel="Confirm Password Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
 				
-				<div style={{position: 'absolute', bottom:20}}>
+				<View style={{position: 'absolute', bottom:20}}>
 				<Button buttonStyle={styles.saveBtn}
                     onPress={onPressSave}
                     title="Save"
@@ -102,7 +102,7 @@ const EditProfile = ({navigation}) => {
                     title="Cancel"
                     titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
                     accessibilityLabel="Cancel Button" />
-				</div>
+				</View>
 				
             </View>
         </View>
@@ -174,7 +174,6 @@ const styles = StyleSheet.create({
     searchInput: {
         // backgroundColor: 'pink'
         color: '#000',
-        //    outlineWidth: 0,
         fontSize: 20
 
     },
@@ -182,7 +181,7 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     searchInputContainer: {
-        border: 0,
+        borderWidth: 0,
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 5,

@@ -16,7 +16,7 @@ const Login = ({navigation}) => {
 
     return (
         <ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
-            <div style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} />
+            <View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
             <Image source={require('../assets/logo2.png')} style={styles.image} />
             <View style={styles.formContainer}>
                 <Input
@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
     searchInput: {
         // backgroundColor: 'pink'
         color: '#000',
-        //    outlineWidth: 0,
         fontSize: 20
 
     },
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     searchInputContainer: {
-        border: 0,
+        borderWidth: 0,
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 5,

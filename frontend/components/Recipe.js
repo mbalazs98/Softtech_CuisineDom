@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         height: 150,
         borderRadius: 7,
         // backgroundColor: 'red'
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)'
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)'
     },
     recipeMainInfo: {
         flex: 1,

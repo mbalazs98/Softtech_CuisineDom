@@ -164,8 +164,8 @@ const styles = StyleSheet.create({
         padding: 18,
         fontSize: 18,
         color: '#6974e8',
-        fontWeight: 'bolder',
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
+        fontWeight: 'bold',
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
         borderWidth: 1,
         borderColor: '#6974e8',
         borderRadius: 7
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#da4167',
         borderRadius: 15,
         height: 75,
-        boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
 
     }
 })
