@@ -2,8 +2,8 @@ import json
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
 from rest_framework.parsers import JSONParser
-from recipes.serializers import UserSerializer, usersSerializer, recipesSerializer
-from .models import users, recipes, user_recipes
+from recipes.serializers import usersSerializer, recipesSerializer, ingredientsSerializer
+from .models import users, recipes, user_recipes, ingredients, recipe_ingredients
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view, permission_classes
@@ -14,13 +14,16 @@ from rest_framework.authtoken.models import Token
 from pycdi import Inject, Producer
 import string
 
+
 @Producer(_context='login_failed')
 def get_login_failed():
     return 'login failed'
 
+
 @Producer(_context='registration_failed')
 def get_registration_failed():
     return 'registration failed'
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -28,73 +31,106 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = users.objects.all()
     serializer_class = usersSerializer
-    #permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
-@Inject(failed_register = 'registration_failed')
+
+@Inject(failed_register='registration_failed')
 @api_view(['POST'])
-def RegisterPage(request, failed_register:str, *args, **kwargs):
-
+def RegisterPage(request, failed_register: str, *args, **kwargs):
     if request.method == 'POST':
         if request.body:
             body = json.loads(request.body)
         else:
-            return JsonResponse({'message': 'Error! Expected POST body, found None.' }, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': 'Error! Expected POST body, found None.'},
+                                status=status.HTTP_400_BAD_REQUEST)
         if body.get('username') == '':
-            return JsonResponse({'message': failed_register, 'error': 'no username was given'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': failed_register, 'error': 'no username was given'},
+                                status=status.HTTP_400_BAD_REQUEST)
         if body.get('password') == '':
-            return JsonResponse({'message': failed_register, 'error': 'no password was given'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': failed_register, 'error': 'no password was given'},
+                                status=status.HTTP_400_BAD_REQUEST)
         if body.get('email') == '':
-            return JsonResponse({'message': failed_register, 'error': 'no email address was given'}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return JsonResponse({'message': failed_register, 'error': 'no email address was given'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            user = User.objects.create_user(username=body.get('username'), password=body.get('password'), email=body.get('email'))
-            recipes_user = users.create(body.get('username'), body.get('password'), body.get('email'))
-            user.save()
+            recipes_user = users.objects.create_user(username=body.get('username'), password=body.get('password'), email=body.get('email'))
             recipes_user.save()
         except Exception as e:
-            return JsonResponse({'message': 'Registration failed', 'error': 'An account with the same username/email already exists.' }, status=status.HTTP_400_BAD_REQUEST)
-        token = Token.objects.create(user=user)
+            return JsonResponse(
+                {'message': 'Registration failed', 'error': 'An account with the same username/email already exists.'},
+                status=status.HTTP_400_BAD_REQUEST)
+        token = Token.objects.create(user=recipes_user)
         return JsonResponse({'message': 'Registration succeeded', 'username': recipes_user.username
                                 , 'email': recipes_user.email, "token": token.key}, status=status.HTTP_201_CREATED)
     else:
-        return JsonResponse({'message': 'registration failed', 'error' : 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': 'registration failed', 'error': 'post method should be used'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-@Inject(failed_login = 'login_failed')
+
+@Inject(failed_login='login_failed')
 @api_view(['POST'])
-def LoginPage(request, failed_login:str):
+def LoginPage(request, failed_login: str):
     if request.method == 'POST':
         if request.body:
             body = json.loads(request.body)
         else:
-            return JsonResponse({'message': 'Error! Expected POST body, found None.'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': 'Error! Expected POST body, found None.'},
+                                status=status.HTTP_400_BAD_REQUEST)
         username = body.get('username')
         password = body.get('password')
         try:
             user = authenticate(request, username=username, password=password)
-            k = users.objects.get(username=username)
+            recipes_user = users.objects.get(username=username)
             if user is not None:
-                token = Token.objects.get(user=user).key
-                return JsonResponse({'message' : 'login_succeeded', 'username' : username, 'token': token})
+                try:
+                    token = Token.objects.create(user=recipes_user)
+                except:
+                    return JsonResponse({'message': failed_login, 'error': 'User already logged in'},
+                                 status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token.key})
             else:
-                return JsonResponse({'message' : failed_login, 'error': 'Wrong password'}, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'message': failed_login, 'error': 'Wrong password'},
+                                    status=status.HTTP_400_BAD_REQUEST)
         except:
-            return JsonResponse({'message' : failed_login, 'error': 'No user with this username'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': failed_login, 'error': 'No user with this username'},
+                                status=status.HTTP_400_BAD_REQUEST)
     else:
-        return JsonResponse({'message': failed_login, 'error': 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': failed_login, 'error': 'post method should be used'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-
-
+@api_view(['GET'])
+def GetIngredients(request):
+    fields = ('ingredient_name')
+    ingreds = ingredients.objects.all() #values_list(fields, flat=True)
+    if ingreds is not None:
+        if request.method == 'GET':
+            ingreds_serializer = ingredientsSerializer(ingreds, many=True) #, fields = fields)
+            return JsonResponse(ingreds_serializer.data, safe=False)
+    else:
+        return JsonResponse({'message': 'No ingredients exist'}, status=status.HTTP_404_NOT_FOUND)
+        
+@api_view(['POST'])
+def SearchRecipeByIngredients(request):
+    if request.body:
+        try:
+            ingredient_id = ingredients.objects.filter(ingredient_name__in=request.body.get('ingredient'))
+            recipe_id = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_id)
+            recipe = recipes.objects.filter(recipe_id__in=recipe_id)
+        except:
+            return JsonResponse({'message': 'Recipe with these ingredients does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'POST':
+            recipes_serializer = recipesSerializer(recipe)
+            return JsonResponse(recipes_serializer.data)
+    else:
+        return JsonResponse({'message': 'No ingredients given'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
-def SearchRecipeByIngredients(request, string_ingredients):
-    try:
-        recipe = recipes.objects.get(string_ingredients=string_ingredients)
-    except recipes.DoesNotExist:
-        return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'POST':
-        recipes_serializer = recipesSerializer(recipe)
-        return JsonResponse(recipes_serializer.data)
-
+@permission_classes((IsAuthenticated,))
+def LogOut(request):
+    request.user.auth_token.delete()
+    return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
+    
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
 def RecipeID(request, recipe_id):
@@ -116,6 +152,7 @@ def RecipeID(request, recipe_id):
         recipe.delete()
         return JsonResponse({'message': 'Recipe was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def New(request):
@@ -127,8 +164,9 @@ def New(request):
             return JsonResponse(recipe_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
-def SearchRecipeByName(request, recipe_name:string):
+def SearchRecipeByName(request, recipe_name: string):
     recipe = recipes.objects.all()
     recipe = recipe.filter(recipe_name__contains=recipe_name)[:500]
     if recipe is not None:
@@ -136,13 +174,13 @@ def SearchRecipeByName(request, recipe_name:string):
             recipes_serializer = recipesSerializer(recipe, many=True)
             return JsonResponse(recipes_serializer.data, safe=False)
     return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
-    
 
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def UsersPage(request):
-    return JsonResponse({'username' : request.user.username, 'email' : request.user.email})
+    return JsonResponse({'username': request.user.username, 'email': request.user.email})
+
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
@@ -168,4 +206,5 @@ def DeleteUserRecipe(request, id_to_delete):
         user_recipe_to_delete.delete()
         return JsonResponse({'message': 'Recipe from user database is deleted successfully.'})
     else:
-        return JsonResponse({'message': 'Deletion failed', 'error' : 'post method should be used'}, status=status.HTTP_400_BAD_REQUEST)        
+        return JsonResponse({'message': 'Deletion failed', 'error': 'post method should be used'},
+                            status=status.HTTP_400_BAD_REQUEST)

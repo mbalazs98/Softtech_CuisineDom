@@ -7,5 +7,5 @@ class UsersRegisterForm(ModelForm):
         model = users
         fields = ['username', 'password', 'email']
         widgets = {
-            'password' : forms.PasswordInput()
+            'password': forms.PasswordInput(),
         }

@@ -31,15 +31,17 @@ router.register(r'users', views.UserViewSet)
 urlpatterns = [
     path('register/', views.RegisterPage),
     path('login/', views.LoginPage),
+    path('logout/', views.LogOut),
     path('user/', views.UsersPage),
     path('user/recipes', views.UserRecipePage),
     path('user/<id_to_delete>/delete_recipe', views.DeleteUserRecipe),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('recipes/<string_ingredients>/ingredients', views.SearchRecipeByIngredients),
+    path('recipes/ingredients', views.SearchRecipeByIngredients),
     path('recipes/<recipe_id>/recipeID', views.RecipeID),
     path('recipes/new', views.New),
-    path('recipes/<recipe_name>/search', views.SearchRecipeByName)
-    
+    path('recipes/<recipe_name>/search', views.SearchRecipeByName),
+    path('recipes/get_ingredients', views.GetIngredients)
+
 ]
