@@ -97,7 +97,7 @@ def LoginPage(request, failed_login: str):
 
 
 @api_view(['POST'])
-def SearchRecipeByIngredients(request, string_ingredients):
+def SearchRecipeByIngredients(request, ingredient_name):
     try:
         ingredient_id = ingredients.objects.filter(ingredient_name__in=ingredient_name)
         recipe_id = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_id)
