@@ -54,7 +54,8 @@ const App = () => {
 	let user = {
 			name: 'Patrick',
 			email: 'patrick@cuisinedom.com',
-			password: 'userpass'
+			password: 'userpass',
+			token: ''
 		}
 
 

@@ -3,8 +3,9 @@ import { TouchableOpacity, View, Text, StyleSheet, FlatList } from 'react-native
 import { Button, Input } from 'react-native-elements';
 // import SuggestedItem from './SuggestedItem';
 
-
-const DATA = [
+const qu = fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+			.then((response) => response.json())
+const _DATA = [
     {
         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
         title: 'First Item',
@@ -18,6 +19,9 @@ const DATA = [
         title: 'Third Item',
     },
 ];
+
+const DATA = []
+
 
 let suggestedDATA = []
 let selectedDATA = new Set();

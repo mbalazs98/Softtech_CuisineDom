@@ -2,7 +2,7 @@ import json
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
 from rest_framework.parsers import JSONParser
-from recipes.serializers import usersSerializer, recipesSerializer
+from recipes.serializers import usersSerializer, recipesSerializer, ingredientsSerializer
 from .models import users, recipes, user_recipes, ingredients, recipe_ingredients
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
@@ -94,7 +94,6 @@ def LoginPage(request, failed_login: str):
     else:
         return JsonResponse({'message': failed_login, 'error': 'post method should be used'},
                             status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST'])
 def SearchRecipeByIngredients(request):

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { Button, Input } from 'react-native-elements';
+import RecipeContext from './RecipeContext';
 //import Cookies from 'js-cookie';
 
 const Register = ({navigation}) => {
