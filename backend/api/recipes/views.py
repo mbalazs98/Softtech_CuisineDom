@@ -125,7 +125,12 @@ def SearchRecipeByIngredients(request):
     else:
         return JsonResponse({'message': 'No ingredients given'}, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def LogOut(request):
+    request.user.auth_token.delete()
+    return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
+    
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
 def RecipeID(request, recipe_id):
