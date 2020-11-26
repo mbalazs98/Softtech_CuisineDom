@@ -106,16 +106,19 @@ def LogOut(request):
     return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
-def SearchRecipeByIngredients(request, string_ingredients):
-    try:
-        ingredient_id = ingredients.objects.filter(ingredient_name__in=ingredient_name)
-        recipe_id = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_id)
-        recipe = recipes.objects.filter(recipe_id__in=recipe_id)
-    except:
-        return JsonResponse({'message': 'Recipe with these ingredients does not exist'}, status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'POST':
-        recipes_serializer = recipesSerializer(recipe)
-        return JsonResponse(recipes_serializer.data)
+def SearchRecipeByIngredients(request):
+    if request.body:
+        try:
+            ingredient_id = ingredients.objects.filter(ingredient_name__in=request.body.get('ingredient'))
+            recipe_id = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_id)
+            recipe = recipes.objects.filter(recipe_id__in=recipe_id)
+        except:
+            return JsonResponse({'message': 'Recipe with these ingredients does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'POST':
+            recipes_serializer = recipesSerializer(recipe)
+            return JsonResponse(recipes_serializer.data)
+    else:
+        return JsonResponse({'message': 'No ingredients given'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
