@@ -37,7 +37,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('recipes/<string_ingredients>/ingredients', views.SearchRecipeByIngredients),
+    path('recipes/ingredients', views.SearchRecipeByIngredients),
     path('recipes/<recipe_id>/recipeID', views.RecipeID),
     path('recipes/new', views.New),
     path('recipes/<recipe_name>/search', views.SearchRecipeByName)
