@@ -83,8 +83,12 @@ def LoginPage(request, failed_login: str):
             user = authenticate(request, username=username, password=password)
             recipes_user = users.objects.get(username=username)
             if user is not None:
-                token = Token.objects.get(user=recipes_user).key
-                return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token})
+                try:
+                    token = Token.objects.create(user=recipes_user)
+                except:
+                    return JsonResponse({'message': failed_login, 'error': 'User already logged in'},
+                                 status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token.key})
             else:
                 return JsonResponse({'message': failed_login, 'error': 'Wrong password'},
                                     status=status.HTTP_400_BAD_REQUEST)
@@ -95,6 +99,17 @@ def LoginPage(request, failed_login: str):
         return JsonResponse({'message': failed_login, 'error': 'post method should be used'},
                             status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def GetIngredients(request):
+    fields = ('ingredient_name')
+    ingreds = ingredients.objects.all() #values_list(fields, flat=True)
+    if ingreds is not None:
+        if request.method == 'GET':
+            ingreds_serializer = ingredientsSerializer(ingreds, many=True) #, fields = fields)
+            return JsonResponse(ingreds_serializer.data, safe=False)
+    else:
+        return JsonResponse({'message': 'No ingredients exist'}, status=status.HTTP_404_NOT_FOUND)
+        
 @api_view(['POST'])
 def SearchRecipeByIngredients(request):
     if request.body:
