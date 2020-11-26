@@ -83,8 +83,12 @@ def LoginPage(request, failed_login: str):
             user = authenticate(request, username=username, password=password)
             recipes_user = users.objects.get(username=username)
             if user is not None:
-                token = Token.objects.get(user=recipes_user).key
-                return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token})
+                try:
+                    token = Token.objects.create(user=recipes_user)
+                except:
+                    return JsonResponse({'message': failed_login, 'error': 'User already logged in'},
+                                 status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token.key})
             else:
                 return JsonResponse({'message': failed_login, 'error': 'Wrong password'},
                                     status=status.HTTP_400_BAD_REQUEST)
@@ -95,6 +99,11 @@ def LoginPage(request, failed_login: str):
         return JsonResponse({'message': failed_login, 'error': 'post method should be used'},
                             status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def LogOut(request):
+    request.user.auth_token.delete()
+    return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def SearchRecipeByIngredients(request, string_ingredients):

@@ -31,6 +31,7 @@ router.register(r'users', views.UserViewSet)
 urlpatterns = [
     path('register/', views.RegisterPage),
     path('login/', views.LoginPage),
+    path('logout/', views.LogOut),
     path('user/', views.UsersPage),
     path('user/recipes', views.UserRecipePage),
     path('user/<id_to_delete>/delete_recipe', views.DeleteUserRecipe),
