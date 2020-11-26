@@ -3,8 +3,7 @@ import { TouchableOpacity, View, Text, StyleSheet, FlatList } from 'react-native
 import { Button, Input } from 'react-native-elements';
 // import SuggestedItem from './SuggestedItem';
 
-const qu = fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
-			.then((response) => response.json())
+let qu;
 const _DATA = [
     {
         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -20,8 +19,7 @@ const _DATA = [
     },
 ];
 
-const DATA = []
-
+let DATA;
 
 let suggestedDATA = []
 let selectedDATA = new Set();
@@ -31,7 +29,10 @@ const EnterIngredients = ({ route, navigation }) => {
     const [selectedIngredients, setSelectedIngredients] = useState(null);
     const [searchInputValue, setSearchInputValue] = useState(null);
 
-
+	//qu = fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+	//		.then((response) => response.json())
+	//DATA = JSON.parse(qu)
+			
     function onSearchChange(e) {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
@@ -44,7 +45,7 @@ const EnterIngredients = ({ route, navigation }) => {
             for (let i = 0; i < DATA.length; i++) {
                 // console.log(DATA[i].title)
                 // if(DATA[i].title.match(`/[a-z, A-Z, 0-9]*/i${e.target.value}/[a-z, A-Z, 0-9]*/i`)) {
-                if (DATA[i].title.match(`[a-z, A-Z, 0-9]*${e.target.value}[a-z, A-Z, 0-9]*`)) {
+                if (DATA[i].ingredient_name.match(`[a-z, A-Z, 0-9]*${e.target.value}[a-z, A-Z, 0-9]*`)) {
                     // console.log('suggested: ' + DATA[i].title)
                     suggestedDATA.push(DATA[i])
                     setSuggestedIngredients(suggestedDATA)
@@ -54,7 +55,7 @@ const EnterIngredients = ({ route, navigation }) => {
     }
 
     function onFocusSearch() {
-
+		
     }
 
     function onPressSuggestedItem(id, title) {
