@@ -59,20 +59,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const Search = ({ route, navigation }) => {
 
     function onPressBackBtn() {
-        console.log(route.params.results)
-        console.log('back button')
         navigation.navigate('Home', {
             searchQuery: route.params.searchQuery
         })
     }
-
+    
     return (
         <View style={styles.container}>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Search results for "{route.params.searchQuery}"</Text>
 			
             <ScrollView >
 			<View style={styles.itemsContainer}>
-
+                
                 {route.params.results.map((value, index) => {
                     return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
                 })}

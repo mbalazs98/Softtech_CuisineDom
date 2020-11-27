@@ -110,18 +110,51 @@ def GetIngredients(request):
     else:
         return JsonResponse({'message': 'No ingredients exist'}, status=status.HTTP_404_NOT_FOUND)
         
+import itertools
+
+
 @api_view(['POST'])
 def SearchRecipeByIngredients(request):
     if request.body:
+        body = json.loads(request.body)
+        print(body.get('ingredient'))
         try:
-            ingredient_id = ingredients.objects.filter(ingredient_name__in=request.body.get('ingredient'))
-            recipe_id = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_id)
-            recipe = recipes.objects.filter(recipe_id__in=recipe_id)
+            ingredient_names = [item['ingredient_name'] for item in body.get('ingredient')]
+            ingredient_ids = [item['ingredient_id'] for item in body.get('ingredient')]
+            ingredients_found = ingredients.objects.filter(ingredient_name__in=ingredient_names)
+            print(ingredients_found)
+            if ingredients_found:
+                print('yes')
+                recipe_ids = recipe_ingredients.objects.filter(ingredient_id__in=ingredient_ids)[:10]
+                # print(recipe_ids)
+                recipe_ids = [item['recipe_id_id'] for item in recipe_ids.values()]
+                # print(recipe_ids)
+                recipes_res = recipes.objects.filter(recipe_id__in=recipe_ids)
+                res = []
+                for item in recipes_res.values():
+                    res.append(dict(
+                            recipe_id= item['recipe_id'],
+                            recipe_name= item['recipe_name'], 
+                            image= item['image'], 
+                            cooking_method= item['cooking_method']
+                    ))
+                    
+                print(res)
+            # ingredient_ids = []
+            # for ingredient in body.get('ingredient'):
+            #     print(ingredient['ingredient_name'])
+            #     ingredient_id = ingredients.objects.filter(ingredient_name__in=ingredient)
+            #     print(ingredient_id)
+            #     if ingredient_id:
+            #         print('yes')
+            #         ingredient_ids.append(ingredient_id)
+            # print(ingredient_ids)
+            
         except:
             return JsonResponse({'message': 'Recipe with these ingredients does not exist'}, status=status.HTTP_404_NOT_FOUND)
         if request.method == 'POST':
-            recipes_serializer = recipesSerializer(recipe)
-            return JsonResponse(recipes_serializer.data)
+            recipes_serializer = recipesSerializer(res, many=True)
+            return JsonResponse(recipes_serializer.data, safe=False)
     else:
         return JsonResponse({'message': 'No ingredients given'}, status=status.HTTP_400_BAD_REQUEST)
 

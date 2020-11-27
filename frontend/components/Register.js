@@ -19,11 +19,11 @@ const Register = ({navigation}) => {
         // console.log(statePassword)
         // console.log(stateEmail)
         let status;
-        const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+        /*const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
             ? manifest.debuggerHost.split(`:`).shift().concat(`:8000`)
             : `api.example.com`;
             console.log(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))
-            setStateMsg(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))
+            setStateMsg(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))*/
         fetch('http://127.0.0.1:8000/register/', {
             method: 'POST',
             body: JSON.stringify({

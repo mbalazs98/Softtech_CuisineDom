@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, FlatList } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 // import SuggestedItem from './SuggestedItem';
@@ -19,20 +19,26 @@ const _DATA = [
     },
 ];
 
-let DATA;
+let DATA = [];
 
 let suggestedDATA = []
 let selectedDATA = new Set();
 
 const EnterIngredients = ({ route, navigation }) => {
-    const [suggestedIngredients, setSuggestedIngredients] = useState(null);
-    const [selectedIngredients, setSelectedIngredients] = useState(null);
-    const [searchInputValue, setSearchInputValue] = useState(null);
+    const [suggestedIngredients, setSuggestedIngredients] = useState([]);
+    const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const [searchInputValue, setSearchInputValue] = useState('');
 
-	//qu = fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
-	//		.then((response) => response.json())
-	//DATA = JSON.parse(qu)
-			
+    //qu = fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+    //		.then((response) => response.json())
+    //DATA = JSON.parse(qu)
+    useEffect(() => {
+        if (DATA.length == 0)
+            fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+                .then((response) => response.json())
+                .then(data => { DATA = data; console.log('data loaded!'); })
+    });
+
     function onSearchChange(e) {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
@@ -42,11 +48,9 @@ const EnterIngredients = ({ route, navigation }) => {
         setSuggestedIngredients(suggestedDATA)
         if (e.target.value.length > 0) {
 
-            for (let i = 0; i < DATA.length; i++) {
-                // console.log(DATA[i].title)
+            for (let i = 0; i < DATA.length && suggestedDATA.length < 5; i++) {
                 // if(DATA[i].title.match(`/[a-z, A-Z, 0-9]*/i${e.target.value}/[a-z, A-Z, 0-9]*/i`)) {
-                if (DATA[i].ingredient_name.match(`[a-z, A-Z, 0-9]*${e.target.value}[a-z, A-Z, 0-9]*`)) {
-                    // console.log('suggested: ' + DATA[i].title)
+                if (DATA[i] && DATA[i]['ingredient_name'].match(`[a-z, A-Z, 0-9]*${e.target.value.toLocaleLowerCase()}[a-z, A-Z, 0-9]*`)) {
                     suggestedDATA.push(DATA[i])
                     setSuggestedIngredients(suggestedDATA)
                 }
@@ -55,27 +59,41 @@ const EnterIngredients = ({ route, navigation }) => {
     }
 
     function onFocusSearch() {
-		
+        console.log(DATA.length)
     }
 
     function onPressSuggestedItem(id, title) {
         //TODO get item using id only
         // console.log(id, title)
         selectedDATA.add(id)
+        console.log('sdsd ', selectedDATA);
         // console.log(Array.from(selectedDATA))
         // console.log(Array.from(selectedDATA).map(itemid => DATA.find(item => item.id == itemid)))
-        setSelectedIngredients(Array.from(selectedDATA).map(itemid => DATA.find(item => item.id == itemid)))
-        suggestedDATA = []
+        console.log('1 addition')
+        setSelectedIngredients(Array.from(selectedDATA).map(itemid => DATA.find(item => item['ingredient_id'] == itemid)))
+        suggestedDATA = [];
         setSuggestedIngredients(suggestedDATA)
         setSearchInputValue('')
     }
 
+    function onPressDeleteSelectedItem(id, updateMethod) {
+        let selectedTmp = [];
+        selectedTmp = selectedTmp.concat(selectedIngredients);
+        selectedTmp = selectedTmp.filter(item => item.ingredient_id!=id)
+        console.log('2 addition')
+        setSelectedIngredients(selectedTmp);
+        console.log(selectedTmp)
+        console.log(selectedIngredients)
+        selectedDATA = new Set();
+        selectedTmp.forEach(item => {
+            selectedDATA.add(item['ingredient_id'])
+        })
+        console.log(selectedDATA)
+    }
 
-    const SelectedItem = ({ title }) => (
-        <View style={styles.selectedItem}>
-            <Text style={styles.selectedTitle}>{title}</Text>
-        </View>
-    );
+    // const SelectedItem = ({ title, id }) => (
+       
+    // );
 
     const SuggestedItem = ({ id, title }) => (
         <TouchableOpacity onPress={() => onPressSuggestedItem(id, title)}>
@@ -85,14 +103,37 @@ const EnterIngredients = ({ route, navigation }) => {
         </TouchableOpacity>
     )
 
-    const renderSuggestedItem = ({ item }) => (<SuggestedItem id={item.id} title={item.title} />);
-    const renderSelectedItem = ({ item }) => (<SelectedItem title={item.title} />);
+    const renderSuggestedItem = ({ item }) => (<SuggestedItem id={item['ingredient_id']} title={item['ingredient_name']} />);
+    //const renderSelectedItem = ({ item }) => (<SelectedItem title={item['ingredient_name']} id={item['ingredient_id']} />);
+    const renderSelectedItem = ({item}) => (
+        <View style={styles.selectedItem}>
+            <Text style={styles.selectedTitle}>{item['ingredient_name']}</Text>
+            <TouchableOpacity style={styles.deleteSelectedItem} onPress={()=>{onPressDeleteSelectedItem(item['ingredient_id'], setSelectedIngredients);}}></TouchableOpacity>
+        </View>
+    );
 
     function onPressFindBtn() {
-        navigation.navigate('Search', {
-            searchQuery: 'your ingredients',
-            results: [[1, 1, 'date', 'Calzone', 'calzonesq']]
+        fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+            method: 'POST',
+            body: JSON.stringify({
+                'ingredient': selectedIngredients
+            }),
+            //credentials: 'same-origin',
+            headers: {
+            //"X-CSRFToken": Cookies.get("csrftoken"),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+            }
         })
+            .then((response) => response.json())
+            .then(data => {
+                console.log(data)
+                navigation.navigate('Search', {
+                    searchQuery: 'your ingredients',
+                    results: data
+                })
+            })
     }
 
     return (
@@ -115,21 +156,21 @@ const EnterIngredients = ({ route, navigation }) => {
                     extraData={suggestedIngredients}
                     data={suggestedIngredients}
                     renderItem={renderSuggestedItem}
-                    keyExtractor={item => item.id} />
+                    keyExtractor={item => item['ingredient_id']} />
             </View>
-            <Text style={{marginTop: 75, fontSize: 16, color: 'rgba(0, 0, 0, .7)', marginBottom: 20}}>Selected Ingredients</Text>
+            <Text style={{ marginTop: 75, fontSize: 16, color: 'rgba(0, 0, 0, .7)', marginBottom: 20 }}>Selected Ingredients</Text>
             <FlatList
                 style={styles.selectedList}
                 extraData={selectedIngredients}
                 data={selectedIngredients}
                 renderItem={renderSelectedItem}
-                keyExtractor={item => item.id} />
+                keyExtractor={item => item['ingredient_id']} />
             <Button buttonStyle={styles.findBtn}
-						containerStyle={styles.findBtnContainer}
-						onPress={onPressFindBtn}
-						title="Find Recipes"
-						titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 24 }}
-						accessibilityLabel="Find Recipes Button" />
+                containerStyle={styles.findBtnContainer}
+                onPress={onPressFindBtn}
+                title="Find Recipes"
+                titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 24 }}
+                accessibilityLabel="Find Recipes Button" />
         </View>
     )
 }
@@ -160,7 +201,8 @@ const styles = StyleSheet.create({
         zIndex: 9999
     },
     selectedList: {
-        zIndex: -1
+        zIndex: -1,
+        maxHeight: 300
     },
     selectedItem: {
         padding: 5
@@ -187,6 +229,15 @@ const styles = StyleSheet.create({
         height: 75,
         //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
 
+    },
+    deleteSelectedItem: {
+        width: 20,
+        height: 5,
+        backgroundColor: 'red',
+        position: 'absolute',
+        right: 30,
+        top: 35,
+        borderRadius: 3
     }
 })
 
