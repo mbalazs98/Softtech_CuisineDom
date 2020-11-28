@@ -61,7 +61,7 @@ def RegisterPage(request, failed_register: str, *args, **kwargs):
                 {'message': 'Registration failed', 'error': 'An account with the same username/email already exists.'},
                 status=status.HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=recipes_user)
-        return JsonResponse({'message': 'Registration succeeded', 'username': recipes_user.username
+        return JsonResponse({'message': 'registration succeeded', 'username': recipes_user.username
                                 , 'email': recipes_user.email, "token": token.key}, status=status.HTTP_201_CREATED)
     else:
         return JsonResponse({'message': 'registration failed', 'error': 'post method should be used'},
