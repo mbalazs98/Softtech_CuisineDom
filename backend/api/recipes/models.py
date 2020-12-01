@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 class tags(models.Model):
@@ -54,9 +55,9 @@ class recipe_ingredients(models.Model):
     
 class user_recipes(models.Model):
     recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(users, on_delete=models.CASCADE)
+    users_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     class Meta:
         constraints = [
-        models.UniqueConstraint(fields= ["recipe_id", "user_id"], name='user_recipes_id_constraint'),
+        models.UniqueConstraint(fields= ["recipe_id", "users_id"], name='user_recipes_id_constraint'),
         ]
     

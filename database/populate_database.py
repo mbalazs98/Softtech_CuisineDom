@@ -11,7 +11,7 @@ def main():
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
 
-    """
+    
     # Insert cuisines
     with open('data/cuisines.json') as f:
         data = json.load(f)
@@ -23,27 +23,27 @@ def main():
     c.executemany('INSERT INTO recipes_cuisines(cuisine_name) VALUES(?);',records);
     
     print('We have inserted', c.rowcount, 'records to the cuisines table.')
-    """ 
+    """ """
     
-    """
+    
     # Insert ingredients
     with open('data/ingredients.json') as f:
         data = json.load(f)
     records = [(ingredient, ) for ingredient in data['ingredients']]
     c.executemany('INSERT INTO recipes_ingredients(ingredient_name) VALUES(?);',records);
     print('We have inserted', c.rowcount, 'records to the ingredients table.')
-    """ 
+    """ """
     
-    """
+    
     # Insert tags
     with open('data/tags.json') as f:
         data = json.load(f)
     records = [(tag, ) for tag in data['tags']]
     c.executemany('INSERT INTO recipes_tags(tag_name) VALUES(?);',records);
     print('We have inserted', c.rowcount, 'records to the tags table.')
-    """ 
+    """ """
     
-    """
+    
     # Insert recipes
     
     #    recipe_id INTEGER PRIMARY KEY,
@@ -62,7 +62,7 @@ def main():
     
     c.executemany('INSERT INTO recipes_recipes(recipe_name, cooking_method, image, string_ingredients, prep_time, serving) VALUES(?, ?, ?, ?, ?, ?);',records);
     print('We have inserted', c.rowcount, 'records to the recipes table.')
-    """ 
+    """ """
     
     
     # Inserting recipe cuisines, recipe ingredients, recipe tags
