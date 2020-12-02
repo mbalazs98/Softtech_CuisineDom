@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { TouchableOpacity, View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Button, Input } from 'react-native-elements';
 
 const HomeScreen = ({ navigation }) => {
@@ -19,7 +21,40 @@ const HomeScreen = ({ navigation }) => {
 			display: 'none'
 		}
 	})
-
+	//const [authDataJson, setAuthDataJson] = useState(null)
+	const initAuthToken = async () => {
+		try {
+			const authData = await AsyncStorage.getItem('authentication_data');
+			if (authData !== null) {
+				console.log(authData);
+				const authDataJson = JSON.parse(authData);
+				return authDataJson;
+			}
+			else {
+				navigation.navigate('Login')
+			}
+		}
+		catch (error) {
+			console.log(error);
+		  }
+	}
+	
+	const removeAuthToken = async () => {
+		try {
+			await AsyncStorage.removeItem('authentication_data');
+		}
+		catch (error) {
+			console.log(error);
+		  }
+	}
+	/*useEffect(() => {
+        initAuthToken();
+    });*/
+	useFocusEffect(
+		React.useCallback(() => {
+		  initAuthToken();
+    }));
+	
 	function onPressEnterIngredients() {
 		console.log('enter ingredients button')
 		navigation.navigate('EnterIngredients')
@@ -63,6 +98,36 @@ const HomeScreen = ({ navigation }) => {
 			})*/
 
 	}
+	
+	const onPressLogout = async () => {
+		console.log("OnLogout")
+		const authDataJson = await initAuthToken();
+		console.log(authDataJson.token);
+		fetch(`http://127.0.0.1:8000/logout/`, {
+			method: 'POST',
+			//credentials: 'same-origin',
+			headers: {
+			//"X-CSRFToken": Cookies.get("csrftoken"),
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest',
+			'Authorization': 'Token '+authDataJson.token 
+			}
+		}).then(data => {
+            status = data.status;
+            return data.json()
+        }).then(data=> {
+            if(status == 200) {
+				console.log("success")
+                console.log(data);
+				removeAuthToken();
+                navigation.navigate('Login')
+                
+            } else {
+                console.log("ERR")
+            }
+        })
+	}
 
 	function onSearchChange(e) {
 		setStateQuery(e.target.value)
@@ -72,6 +137,9 @@ const HomeScreen = ({ navigation }) => {
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
 				<TouchableOpacity onPress={onPressMenu} style={{position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
+					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={onPressLogout} style={{position: 'absolute', right: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
 					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
 				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />

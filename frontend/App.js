@@ -58,7 +58,7 @@ const App = () => {
 			token: ''
 		}
 
-
+	
 	if (!fontsLoaded) {
 		return <AppLoading />;
 	}
@@ -67,6 +67,13 @@ const App = () => {
 		<RecipeProvider value={user}>
 		<NavigationContainer>
 			<Stack.Navigator>
+				<Stack.Screen
+					name="Home"
+					component={HomeScreen}
+					options={{
+						headerShown: false
+					}}
+				/>
 				<Stack.Screen
 					name="Register"
 					component={Register}
@@ -82,13 +89,7 @@ const App = () => {
 						headerShown: false
 					}}
 				/>
-				<Stack.Screen
-					name="Home"
-					component={HomeScreen}
-					options={{
-						headerShown: false
-					}}
-				/>
+				
 
 				<Stack.Screen name="EnterIngredients" component={EnterIngredients} options={{ headerShown: false }} />
 				<Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { View, Text, StyleSheet, Image, ImageBackground, ScrollView } from 'react-native';
 import { Button, Input } from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage';
 import RecipeContext from './RecipeContext';
 //import Cookies from 'js-cookie';
 import Constants from "expo-constants";
@@ -14,6 +15,15 @@ const Register = ({navigation}) => {
     const [stateEmail, setStateEmail] = useState("");
     const [stateMsg, setStateMsg] = useState("");
 
+	const setAuthToken = async (data) => {
+		try {
+			await AsyncStorage.setItem('authentication_data', JSON.stringify({token: data.token}));
+		}
+		catch (error) {
+			console.log(error);
+		  }
+	}
+	
     function onPressRegister() {
         // console.log(stateUsername)
         // console.log(statePassword)
@@ -48,6 +58,7 @@ const Register = ({navigation}) => {
             } else {
                 console.log("success")
                 console.log(data);
+				setAuthToken(data)
                 navigation.navigate('Home')
             }
         })

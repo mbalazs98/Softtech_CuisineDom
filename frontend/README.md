@@ -16,6 +16,11 @@ $ cd frontend/
 $ expo start
 ```
 
+## Installs
+```
+$ npm i @react-native-community/async-storage
+```
+
 ## Workflows
 ### 1. Enter Ingredients Workflow
 <br>

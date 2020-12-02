@@ -44,13 +44,13 @@ def RegisterPage(request, failed_register: str, *args, **kwargs):
             return JsonResponse({'message': 'Error! Expected POST body, found None.'},
                                 status=status.HTTP_400_BAD_REQUEST)
         if body.get('username') == '':
-            return JsonResponse({'message': failed_register, 'error': 'no username was given'},
+            return JsonResponse({'message': failed_register, 'error': 'No username was given'},
                                 status=status.HTTP_400_BAD_REQUEST)
         if body.get('password') == '':
-            return JsonResponse({'message': failed_register, 'error': 'no password was given'},
+            return JsonResponse({'message': failed_register, 'error': 'No password was given'},
                                 status=status.HTTP_400_BAD_REQUEST)
         if body.get('email') == '':
-            return JsonResponse({'message': failed_register, 'error': 'no email address was given'},
+            return JsonResponse({'message': failed_register, 'error': 'No email address was given'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -161,6 +161,7 @@ def SearchRecipeByIngredients(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def LogOut(request):
+    print(request)
     request.user.auth_token.delete()
     return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
     
