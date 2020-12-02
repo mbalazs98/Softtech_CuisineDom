@@ -4,11 +4,13 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 
 const Recipe = ({ route, navigation }) => {
-
+	var x=1
     function onPressBackToSearch() {
         navigation.navigate('Search')
+		
     }
     return (
+		
         <View style={styles.container}>
             <TouchableOpacity style={styles.backToSearch} onPress={onPressBackToSearch}>
                     <Image source={require('../assets/arrow.svg')} style={styles.icon} />
@@ -27,11 +29,11 @@ const Recipe = ({ route, navigation }) => {
                 </View>
 				<View style={styles.recipeDescriptionContainer}>
                     <Text style={styles.recipeDescriptionTitle}>Ingredients</Text>
-                    <Text style={styles.recipeDescriptionText}>{route.params.recipeIngredients}</Text>
+                    <Text style={styles.recipeDescriptionText}>{route.params.recipeIngredients.slice(1,-1).replace(/'/g,"").split(', ').map((word) => "-" + word).join('\n')}</Text>
                 </View>
                 <View style={styles.recipeDescriptionContainer}>
                     <Text style={styles.recipeDescriptionTitle}>Instructions</Text>
-                    <Text style={styles.recipeDescriptionText}>{route.params.recipeDescription}</Text>
+                    <Text style={styles.recipeDescriptionText}>{route.params.recipeDescription.slice(2,-2).split(/', '|", "|', "|", '/g).map((word) => x++ +  ". " + word).join('\n')}</Text>
                 </View>
             </View>
         </View>
