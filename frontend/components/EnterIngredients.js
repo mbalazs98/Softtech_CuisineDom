@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, FlatList } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 // import SuggestedItem from './SuggestedItem';
 
@@ -79,11 +79,11 @@ const EnterIngredients = ({ route, navigation }) => {
     function onPressDeleteSelectedItem(id, updateMethod) {
         let selectedTmp = [];
         selectedTmp = selectedTmp.concat(selectedIngredients);
-        selectedTmp = selectedTmp.filter(item => item.ingredient_id!=id)
+        selectedTmp = selectedTmp.filter(item => item.ingredient_id != id)
         console.log('2 addition')
         setSelectedIngredients(selectedTmp);
-        console.log(selectedTmp)
-        console.log(selectedIngredients)
+								
+										
         selectedDATA = new Set();
         selectedTmp.forEach(item => {
             selectedDATA.add(item['ingredient_id'])
@@ -92,7 +92,7 @@ const EnterIngredients = ({ route, navigation }) => {
     }
 
     // const SelectedItem = ({ title, id }) => (
-       
+
     // );
 
     const SuggestedItem = ({ id, title }) => (
@@ -105,39 +105,59 @@ const EnterIngredients = ({ route, navigation }) => {
 
     const renderSuggestedItem = ({ item }) => (<SuggestedItem id={item['ingredient_id']} title={item['ingredient_name']} />);
     //const renderSelectedItem = ({ item }) => (<SelectedItem title={item['ingredient_name']} id={item['ingredient_id']} />);
-    const renderSelectedItem = ({item}) => (
+    const renderSelectedItem = ({ item }) => (
         <View style={styles.selectedItem}>
             <Text style={styles.selectedTitle}>{item['ingredient_name']}</Text>
-            <TouchableOpacity style={styles.deleteSelectedItem} onPress={()=>{onPressDeleteSelectedItem(item['ingredient_id'], setSelectedIngredients);}}></TouchableOpacity>
+            <TouchableOpacity style={styles.deleteSelectedItem} onPress={() => { onPressDeleteSelectedItem(item['ingredient_id'], setSelectedIngredients); }}></TouchableOpacity>
         </View>
     );
 
     function onPressFindBtn() {
-        fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
-            method: 'POST',
-            body: JSON.stringify({
-                'ingredient': selectedIngredients
-            }),
-            //credentials: 'same-origin',
-            headers: {
-            //"X-CSRFToken": Cookies.get("csrftoken"),
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then((response) => response.json())
-            .then(data => {
-                console.log(data)
-                navigation.navigate('Search', {
-                    searchQuery: 'your ingredients',
-                    results: data
-                })
+        console.log(selectedIngredients.length)
+        if (selectedIngredients.length > 0)
+            fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    'ingredient': selectedIngredients
+                }),
+                //credentials: 'same-origin',
+                headers: {
+                    //"X-CSRFToken": Cookies.get("csrftoken"),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+		  
+												
+						   
+								 
+											   
+													
+								 
+				  
             })
+                .then((response) => response.json())
+                .then(data => {
+                    console.log(data)
+                    navigation.navigate('Search', {
+                        searchQuery: 'your ingredients',
+                        results: data
+                    })
+                })
+    }
+
+    function onPressBackToHome() {
+        selectedDATA = new Set();
+        setSelectedIngredients([]);
+        navigation.navigate('Home');
     }
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity style={styles.backToSearch} onPress={onPressBackToHome}>
+                <Image source={require('../assets/arrow.svg')} style={styles.icon} />
+                <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back to Home</Text>
+            </TouchableOpacity>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Enter your ingredients</Text>
             <Input
                 onChange={onSearchChange}
@@ -238,7 +258,20 @@ const styles = StyleSheet.create({
         right: 30,
         top: 35,
         borderRadius: 3
-    }
+    },
+    backToSearch: {
+        // flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 35,
+    },
+    icon: {
+        width: 36,
+        height: 36,
+        backgroundColor: '#fff',
+        // marginTop: 100,
+        resizeMode: 'contain'
+    },
 })
 
 export default EnterIngredients;

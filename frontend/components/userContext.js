@@ -1,5 +1,5 @@
-
-const userContext = React.createContext({user: {}});
+import React from 'react';
+const userContext = React.createContext({user: {}, updateUser: () => {}});
 
 export {
   userContext

@@ -19,6 +19,8 @@ $ expo start
 ## Installs
 ```
 $ npm i @react-native-community/async-storage
+$ npm install react-file-base64
+$ npm install react-sticky-el
 ```
 
 ## Workflows

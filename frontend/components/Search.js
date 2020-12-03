@@ -52,6 +52,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
 import SearchItem from './SearchItem';
+import { Sticky } from 'react-sticky-el';
 
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -59,26 +60,27 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const Search = ({ route, navigation }) => {
 
     function onPressBackBtn() {
-        navigation.navigate('Home', {
-            searchQuery: route.params.searchQuery
-        })
+        // navigation.navigate('Home', {
+        //     searchQuery: route.params.searchQuery
+        // })
+        navigation.goBack();
     }
-    
+
     return (
         <View style={styles.container}>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Search results for "{route.params.searchQuery}"</Text>
-			
-            <ScrollView >
-			<View style={styles.itemsContainer}>
-                
-                {route.params.results.map((value, index) => {
-                    return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
-                })}
-			</View>
-            </ScrollView>
 
+            <ScrollView contentContainerStyle={{ 
+				  flex:1,justifyContent:'space-between'
+				}}>
+                <View style={styles.itemsContainer}>
+                    {route.params.results.map((value, index) => {
+                        return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
+                    })}
+                </View>
+            </ScrollView>
+			<View style={styles.backBtnContainer}>
             <Button buttonStyle={styles.backBtn}
-                containerStyle={styles.backBtnContainer}
                 onPress={onPressBackBtn}
                 title="Search more recipes"
                 titleStyle={{ fontFamily: "FiraSansCondensed_400Regular", paddingLeft: 10 }}
@@ -91,6 +93,8 @@ const Search = ({ route, navigation }) => {
                         color="white"
                     />
                 } />
+			</View>
+
         </View>
     )
 }
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
 
     },
     backBtnContainer: {
-		//flex: 1,
+        //flex: 1,
         position: 'absolute',
         left: 30,
         //top: 'auto',
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
 
     },
     backBtn: {
-		
+
         // width: 200,
         padding: 10,
         paddingLeft: 15,
