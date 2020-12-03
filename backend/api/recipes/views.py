@@ -6,13 +6,14 @@ from recipes.serializers import usersSerializer, recipesSerializer, ingredientsS
 from .models import users, recipes, user_recipes, ingredients, recipe_ingredients
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from pycdi import Inject, Producer
 import string
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
 
 
 @Producer(_context='login_failed')
@@ -33,6 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = usersSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
+WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-#@()!.?"
 
 @Inject(failed_register='registration_failed')
 @api_view(['POST'])
@@ -51,6 +53,25 @@ def RegisterPage(request, failed_register: str, *args, **kwargs):
                                 status=status.HTTP_400_BAD_REQUEST)
         if body.get('email') == '':
             return JsonResponse({'message': failed_register, 'error': 'No email address was given'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        for char in body.get('username'):
+            if char not in WHITELIST:
+                return JsonResponse({'message': failed_register, 'error': 'Invalid character in username.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+        for char in body.get('password'):
+            if char not in WHITELIST:
+                return JsonResponse({'message': failed_register, 'error': 'Invalid character in password.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+        for char in body.get('email'):
+            if char not in WHITELIST:
+                return JsonResponse({'message': failed_register, 'error': 'Invalid character in email address.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+        if '@' not in body.get('email'):
+            return JsonResponse({'message': failed_register, 'error': 'Invalid format of email address.'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -210,10 +231,23 @@ def SearchRecipeByName(request, recipe_name: string):
     return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['GET'])
-@permission_classes((IsAuthenticated,))
+@api_view(['GET','POST','DELETE'])
+@parser_classes([MultiPartParser])
 def UsersPage(request):
-    return JsonResponse({'username': request.user.username, 'email': request.user.email})
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':request.user.profile_picture.url})
+        except ValueError:
+            return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':''})
+    elif request.method == 'POST':
+        new_profile_picture = request.FILES['image']
+        user = request.user
+        user.profile_picture = new_profile_picture
+        user.save()
+        return JsonResponse({ 'username': request.user.username, 'email': request.user.email,'profile_picture':request.user.profile_picture.url})
+    elif request.method == 'DELETE':
+        request.user.profile_picture.delete(save=True)
+        return JsonResponse({'message': 'Profile picture successfully deleted'})
 
 
 @api_view(['GET'])

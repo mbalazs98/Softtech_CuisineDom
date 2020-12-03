@@ -17,7 +17,7 @@ class cuisines(models.Model):
  
  
 class users(AbstractUser):
-    pass
+    profile_picture = models.ImageField(blank=True, null=True)
     
 class recipes(models.Model):
     recipe_id = models.AutoField(primary_key=True)
