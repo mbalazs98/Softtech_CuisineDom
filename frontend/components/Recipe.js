@@ -6,11 +6,21 @@ import { useFocusEffect } from '@react-navigation/native';
 const Recipe = ({ route, navigation }) => {
 	var x=1
 	const [image, setImage] = useState(require('../assets/food_placeholder.png'));
+	const [prepTime, setPrepTime] = useState("");
 	
     function onPressBackToSearch() {
         navigation.navigate('Search')
 		
     }
+	
+	function validPrepTime() {
+		//console.log(route.params.recipeTime.substring(route.params.recipeTime.length-7));
+		if(route.params.recipeTime.substring(route.params.recipeTime.length-7)=="minutes")
+		{
+			setPrepTime(route.params.recipeTime);
+		}
+		//else { console.log("No")}
+	}
 	
 	const checkImageURL = async (url) => {
 		try {
@@ -32,6 +42,7 @@ const Recipe = ({ route, navigation }) => {
 	useFocusEffect(
 		React.useCallback(() => {
 		  checkImageURL(route.params.recipeThumb);
+		  validPrepTime();
     }));
 
     return (
@@ -49,7 +60,7 @@ const Recipe = ({ route, navigation }) => {
 				</View>
                 <View style={styles.recipeMainInfo}>
                     <Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
-                    <Text style={styles.recipeTime}>Time to make: <b>{route.params.recipeTime}</b></Text>
+                    <Text style={styles.recipeTime}>Time to make: <b>{prepTime}</b></Text>
                     
                 </View>
 				<View style={styles.recipeDescriptionContainer}>
@@ -117,11 +128,19 @@ const styles = StyleSheet.create({
     recipeTime: {
         fontFamily: 'FiraSansCondensed_400Regular',
         fontSize: 14,
-        marginTop: 10
+        marginTop: 10,
+		width: 180
     },
     recipeDescriptionContainer: {
-        marginTop: 35,
-        width: '100%'
+        marginTop: 20,
+        width: '100%',
+		backgroundColor: '#e8efff',
+        padding: 10,
+        borderRadius: 10,
+        //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
+        //marginLeft: 7.5,
+        //marginRight: 7.5,
+        marginBottom: 15
     },
     recipeDescriptionTitle: {
         fontSize: 16,
