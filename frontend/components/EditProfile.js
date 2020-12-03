@@ -1,58 +1,88 @@
 import React, { useState, useContext } from 'react';
 
-import { Form, View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { Form, View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import RecipeContext from './RecipeContext';
+import FileBase64 from 'react-file-base64';
 
-const EditProfile = ({navigation}) => {
+									   
 
-	let user = useContext(RecipeContext)
-	
-	const [newUsername, setNewUsername] = useState('');
+const EditProfile = ({ navigation }) => {
+
+    let {user, updateUser} = useContext(RecipeContext)
+
+    const [newUsername, setNewUsername] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-	
-	function onUsernameChange(e) {
+    const [newImage, setnewImage] = useState(null);
+
+    function onUsernameChange(e) {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
         // console.log(e.target.value)
         setNewUsername(e.target.value)
     }
-	
-	function onOldPasswordChange(e) {
+
+    function onOldPasswordChange(e) {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
         // console.log(e.target.value)
         setOldPassword(e.target.value)
     }
-	
-	function onNewPasswordChange(e) {
+
+    function onNewPasswordChange(e) {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
         // console.log(e.target.value)
         setNewPassword(e.target.value)
     }
-	
+
     function onPressCancel() {
         navigation.navigate('Profile')
     }
 
-    
+
     function onPressSave() {
-		if (newUsername.length > 0 && newPassword.length > 0 && oldPassword == user.password) {
-			user.name = newUsername;
-			user.password = newPassword;
-			navigation.navigate('Home');
-		}
+        if (newUsername.length > 0 && newPassword.length > 0 && oldPassword == user.password) {
+            updateUser({
+                'name': newUsername,
+                'image': newImage,
+                'password': newPassword
+            })
+            // TODO when the api endpoint is implemented
+            // fetch(`http://127.0.0.1:8000/user/edit/`, {
+            //     method: 'POST',
+            //     body: JSON.stringify({
+                    //     'username': user.name,
+                    //     'password': user.password,
+                    //     'image': user.image
+                    // }),
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Accept': 'application/json',
+            //         'X-Requested-With': 'XMLHttpRequest'
+            //     }
+            // })
+            //     .then((response) => response.json())
+            //     .then(data => {
+            //         console.log(data)
+            //         navigation.navigate('Profile')
+            //     })
+
+            navigation.goBack();
+        }
     }
 
+    function doneImage(file) {
+        setnewImage(file['base64'])
+    }
 
     return (
         <View style={styles.backgroundImage}>
-			<Text style={{ marginTop: 25, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Edit Profile</Text>
+            <Text style={{ marginTop: 25, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Edit Profile</Text>
             <View style={styles.formContainer}>
                 <Input
-					onChange={onUsernameChange}
+                    onChange={onUsernameChange}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
                     //placeholder="Enter your new username"
@@ -60,18 +90,18 @@ const EditProfile = ({navigation}) => {
                     accessibilityLabel="Username Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
-					onChange={onOldPasswordChange}
+                    onChange={onOldPasswordChange}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
-					secureTextEntry={true}
+                    secureTextEntry={true}
                     //placeholder="Enter your old password"
                     label="Old Password"
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="Old Password Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
-					onChange={onNewPasswordChange}
+                    onChange={onNewPasswordChange}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -80,7 +110,7 @@ const EditProfile = ({navigation}) => {
                     secureTextEntry={true}
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="New Password Input" />
-				<Input
+                <Input
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -89,21 +119,24 @@ const EditProfile = ({navigation}) => {
                     secureTextEntry={true}
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="Confirm Password Input" />
+                <FileBase64
+                    multiple={false}
+                    onDone={doneImage} />
                 <Text style={{ width: 260, height: 20 }}></Text>
-				
-				<View style={{position: 'absolute', bottom:20}}>
-				<Button buttonStyle={styles.saveBtn}
-                    onPress={onPressSave}
-                    title="Save"
-                    titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
-                    accessibilityLabel="Save Button" />
-                <Button buttonStyle={styles.cancelBtn}
-                    onPress={onPressCancel}
-                    title="Cancel"
-                    titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
-                    accessibilityLabel="Cancel Button" />
-				</View>
-				
+
+                <View style={{ position: 'absolute', bottom: 20 }}>
+                    <Button buttonStyle={styles.saveBtn}
+                        onPress={onPressSave}
+                        title="Save"
+                        titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
+                        accessibilityLabel="Save Button" />
+                    <Button buttonStyle={styles.cancelBtn}
+                        onPress={onPressCancel}
+                        title="Cancel"
+                        titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
+                        accessibilityLabel="Cancel Button" />
+                </View>
+
             </View>
         </View>
     )
@@ -117,7 +150,7 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     formContainer: {
-		flex: 1,
+        flex: 1,
         backgroundColor: "#fff",
         padding: 25,
         borderRadius: 7,
@@ -133,7 +166,7 @@ const styles = StyleSheet.create({
 
     },
     backgroundImage: {
-		flex: 1,
+        flex: 1,
         resizeMode: 'cover',
         alignItems: 'center'
     },
@@ -146,7 +179,7 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         borderRadius: 15,
         width: 260,
-		
+
 
     },
     saveBtn: {
@@ -160,7 +193,7 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         borderRadius: 15,
         alignSelf: 'center',
-		marginBottom: 5
+        marginBottom: 5
     },
 
     searchContainer: {
@@ -187,7 +220,24 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 5,
         // backgroundColor: 'green'
-    }
+    },
+    buttonStyle: {
+        backgroundColor: '#307ecc',
+        borderWidth: 0,
+        color: '#FFFFFF',
+        borderColor: '#307ecc',
+        height: 40,
+        alignItems: 'center',
+        borderRadius: 30,
+        marginLeft: 35,
+        marginRight: 35,
+        marginTop: 15,
+    },
+    buttonTextStyle: {
+        color: '#FFFFFF',
+        paddingVertical: 10,
+        fontSize: 16,
+    },
 
 })
 

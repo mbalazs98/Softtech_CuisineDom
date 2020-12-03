@@ -10,15 +10,15 @@ const SearchItem = ({itemID, itemName, itemThumb, itemDescription, navigation}) 
 		fetch(`http://127.0.0.1:8000/recipes/${itemID}/recipeID`)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
-				// console.log(data.results)
+                //console.log(data)
 				navigation.navigate('Recipe', {
 					recipeID: data['recipe_id'],
 					recipeName: data['recipe_name'],
 					recipeThumb: data['image'],
 					recipeTime: data['prep_time'],
 					recipeServing: data['serving'],
-					recipeIngredients: data['string_ingredients'],
-					recipeDescription: data['cooking_method']
+					recipeIngredients: data['string_ingredients']!=undefined? data['string_ingredients']: 'No ingredients available.',
+					recipeDescription: data['cooking_method']!=undefined? data['cooking_method']: 'No description available.'
 				})
 			})
         /*navigation.navigate('Recipe', {
