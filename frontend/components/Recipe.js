@@ -54,23 +54,26 @@ const Recipe = ({ route, navigation }) => {
             </TouchableOpacity>
             {/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.recipeContainer}>
+			
 				<View>
 					<Image source={image} style={styles.image} />
 					<Text style={styles.recipeTime}><b>{route.params.recipeServing}</b></Text>
 				</View>
-                <View style={styles.recipeMainInfo}>
-                    <Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
-                    <Text style={styles.recipeTime}>Time to make: <b>{prepTime}</b></Text>
-                    
-                </View>
+				<View style={styles.recipeMainInfo}>
+					<Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
+					<Text style={styles.recipeTime}>Time to make: <b>{prepTime}</b></Text>
+					
+				</View>
+			
 				<View style={styles.recipeDescriptionContainer}>
-                    <Text style={styles.recipeDescriptionTitle}>Ingredients</Text>
-                    <Text style={styles.recipeDescriptionText}>{route.params.recipeIngredients.slice(1,-1).replace(/'/g,"").split(', ').map((word) => "-" + word).join('\n')}</Text>
-                </View>
-                <View style={styles.recipeDescriptionContainer}>
-                    <Text style={styles.recipeDescriptionTitle}>Instructions</Text>
-                    <Text style={styles.recipeDescriptionText}>{route.params.recipeDescription.slice(2,-2).split(/', '|", "|', "|", '/g).map((word) => x++ +  ". " + word).join('\n')}</Text>
-                </View>
+					<Text style={styles.recipeDescriptionTitle}>Ingredients</Text>
+					<Text style={styles.recipeDescriptionText}>{route.params.recipeIngredients.slice(1,-1).replace(/'/g,"").split(', ').map((word) => "-" + word).join('\n')}</Text>
+				
+				</View>
+				<View style={styles.recipeDescriptionContainer}>
+					<Text style={styles.recipeDescriptionTitle}>Instructions</Text>
+					<Text style={styles.recipeDescriptionText}>{route.params.recipeDescription.slice(2,-2).split(/', '|", "|', "|", '/g).map((word) => x++ +  ". " + word).join('\n')}</Text>
+				</View>
             </View>
         </View>
     )

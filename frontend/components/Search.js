@@ -70,15 +70,17 @@ const Search = ({ route, navigation }) => {
         <View style={styles.container}>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Search results for "{route.params.searchQuery}"</Text>
 
-            <ScrollView >
+            <ScrollView contentContainerStyle={{ 
+				  flex:1,justifyContent:'space-between'
+				}}>
                 <View style={styles.itemsContainer}>
                     {route.params.results.map((value, index) => {
                         return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
                     })}
                 </View>
             </ScrollView>
+			<View style={styles.backBtnContainer}>
             <Button buttonStyle={styles.backBtn}
-                containerStyle={styles.backBtnContainer}
                 onPress={onPressBackBtn}
                 title="Search more recipes"
                 titleStyle={{ fontFamily: "FiraSansCondensed_400Regular", paddingLeft: 10 }}
@@ -91,6 +93,7 @@ const Search = ({ route, navigation }) => {
                         color="white"
                     />
                 } />
+			</View>
 
         </View>
     )

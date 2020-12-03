@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { TouchableOpacity, View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Button, Input } from 'react-native-elements';
+import RecipeContext from './RecipeContext';
 
 const HomeScreen = ({ navigation }) => {
+	let {user, updateUser} = useContext(RecipeContext);
 	const [stateQuery, setStateQuery] = useState("")
 	const [stateStyles, setStateStyles] = useState({
 		labelStyle: {
@@ -39,20 +41,21 @@ const HomeScreen = ({ navigation }) => {
 		  }
 	}
 	
-	const removeAuthToken = async () => {
+	/*const removeAuthToken = async () => {
 		try {
 			await AsyncStorage.removeItem('authentication_data');
 		}
 		catch (error) {
 			console.log(error);
 		  }
-	}
+	}*/
 	/*useEffect(() => {
         initAuthToken();
     });*/
 	useFocusEffect(
 		React.useCallback(() => {
 		  initAuthToken();
+		  //removeAuthToken();
     }));
 	
 	function onPressEnterIngredients() {
@@ -60,9 +63,37 @@ const HomeScreen = ({ navigation }) => {
 		navigation.navigate('EnterIngredients')
 	}
 	
-	function onPressMenu() {
+	const onPressMenu = async () => {
 		console.log('menu button')
-		navigation.navigate('Profile')
+		const authDataJson = await initAuthToken();
+		fetch(`http://127.0.0.1:8000/user/`, {
+			method: 'GET',
+			//credentials: 'same-origin',
+			headers: {
+			//"X-CSRFToken": Cookies.get("csrftoken"),
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest',
+			'Authorization': 'Token '+authDataJson.token 
+			}
+		}).then(data => {
+            status = data.status;
+            return data.json()
+        }).then(data=> {
+            if(status == 200) {
+				console.log("success")
+                console.log(data);
+				updateUser({
+					'name': data.username,
+					'image': require('../assets/profile_placeholder.png'),
+					'email': data.email
+				});
+                navigation.navigate('Profile')
+                
+            } else {
+                console.log("ERR")
+            }
+        })
 	}
 
 	function onFocusSearchBtn() {
@@ -99,7 +130,7 @@ const HomeScreen = ({ navigation }) => {
 
 	}
 	
-	const onPressLogout = async () => {
+	/*const onPressLogout = async () => {
 		console.log("OnLogout")
 		const authDataJson = await initAuthToken();
 		console.log(authDataJson.token);
@@ -127,7 +158,7 @@ const HomeScreen = ({ navigation }) => {
                 console.log("ERR")
             }
         })
-	}
+	}*/
 
 	function onSearchChange(e) {
 		setStateQuery(e.target.value)
@@ -137,9 +168,6 @@ const HomeScreen = ({ navigation }) => {
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
 				<TouchableOpacity onPress={onPressMenu} style={{position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
-					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
-				</TouchableOpacity>
-				<TouchableOpacity onPress={onPressLogout} style={{position: 'absolute', right: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
 					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
 				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />

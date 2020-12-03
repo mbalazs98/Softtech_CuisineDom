@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Button } from 'react-native-elements';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import RecipeContext from './RecipeContext';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -20,14 +21,75 @@ const Profile = ({ route, navigation }) => {
     function onPressBackToHome() {
         navigation.navigate('Home')
     }
+	
+	const getAuthData = async () => {
+		try {
+			const authData = await AsyncStorage.getItem('authentication_data');
+			if (authData !== null) {
+				console.log(authData);
+				const authDataJson = JSON.parse(authData);
+				return authDataJson;
+			}
+			else {
+				navigation.navigate('Login')
+			}
+		}
+		catch (error) {
+			console.log(error);
+		  }
+	}
+	
+	const removeAuthToken = async () => {
+		try {
+			await AsyncStorage.removeItem('authentication_data');
+		}
+		catch (error) {
+			console.log(error);
+		  }
+	}
+	
+	const onPressLogout = async () => {
+		console.log("OnLogout")
+		const authDataJson = await getAuthData();
+		console.log(authDataJson)
+		fetch(`http://127.0.0.1:8000/logout/`, {
+			method: 'POST',
+			//credentials: 'same-origin',
+			headers: {
+			//"X-CSRFToken": Cookies.get("csrftoken"),
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest',
+			'Authorization': 'Token '+authDataJson.token 
+			}
+		}).then(data => {
+            status = data.status;
+            return data.json()
+        }).then(data=> {
+            if(status == 200) {
+				console.log("success")
+                console.log(data);
+				removeAuthToken();
+                navigation.navigate('Login')
+                
+            } else {
+                console.log("ERR")
+            }
+        })
+	}
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.backToHome} onPress={onPressBackToHome}>
-                <Image source={require('../assets/arrow.svg')} style={styles.icon} />
-                <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back</Text>
-            </TouchableOpacity>
-            {/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
+			<View>
+				<TouchableOpacity style={styles.backToHome} onPress={onPressBackToHome}>
+					<Image source={require('../assets/arrow.svg')} style={styles.icon} />
+					<Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={onPressLogout} style={{position: 'absolute', right: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
+					<Image source={require('../assets/logout_btn.png')} style={styles.icon} />
+				</TouchableOpacity>
+            </View>
+			{/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.userContainer}>
                 <Image source={{ uri: user.image, cache: 'reload' }} style={styles.image} />
                 <View style={styles.recipeMainInfo}>

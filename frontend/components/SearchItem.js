@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 const SearchItem = ({itemID, itemName, itemThumb, itemDescription, navigation}) => {
@@ -30,9 +31,37 @@ const SearchItem = ({itemID, itemName, itemThumb, itemDescription, navigation}) 
 		  checkImageURL(itemThumb);
     }))
 	
-    function onPressSearchItem() {
+	const getAuthData = async () => {
+		try {
+			const authData = await AsyncStorage.getItem('authentication_data');
+			if (authData !== null) {
+				console.log(authData);
+				const authDataJson = JSON.parse(authData);
+				return authDataJson;
+			}
+			else {
+				navigation.navigate('Login')
+			}
+		}
+		catch (error) {
+			console.log(error);
+		  }
+	}
+	
+    const onPressSearchItem = async () => {
         console.log(itemID)
-		fetch(`http://127.0.0.1:8000/recipes/${itemID}/recipeID`)
+		const authDataJson = await getAuthData();
+		fetch(`http://127.0.0.1:8000/recipes/${itemID}/recipeID`, {
+			method: 'GET',
+			//credentials: 'same-origin',
+			headers: {
+			//"X-CSRFToken": Cookies.get("csrftoken"),
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest',
+			'Authorization': 'Token '+authDataJson.token 
+			}
+		})
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
                 console.log(data)
