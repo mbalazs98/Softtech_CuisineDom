@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const Recipe = ({ route, navigation }) => {
 	var x=1
+	const [image, setImage] = useState(require('../assets/food_placeholder.png'));
+	
     function onPressBackToSearch() {
         navigation.navigate('Search')
 		
     }
+	
+	const checkImageURL = async (url) => {
+		try {
+			await fetch(url) 
+				.then(res => {
+				if(res.status == 200){
+					console.log(url)
+				setImage(url) 
+				}
+				})
+		//.catch(err=>{setImage('../assets/food_placeholder.png') })
+		}
+		catch (error) {
+			console.log(error);
+			setImage(require('../assets/food_placeholder.png'));
+		}
+	}
+	
+	useFocusEffect(
+		React.useCallback(() => {
+		  checkImageURL(route.params.recipeThumb);
+    }));
+
     return (
 		
         <View style={styles.container}>
@@ -19,7 +44,7 @@ const Recipe = ({ route, navigation }) => {
             {/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.recipeContainer}>
 				<View>
-					<Image source={route.params.recipeThumb} style={styles.image} />
+					<Image source={image} style={styles.image} />
 					<Text style={styles.recipeTime}><b>{route.params.recipeServing}</b></Text>
 				</View>
                 <View style={styles.recipeMainInfo}>
