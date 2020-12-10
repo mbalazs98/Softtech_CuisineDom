@@ -9,6 +9,7 @@ import RecipeContext from './RecipeContext';
 const HomeScreen = ({ navigation }) => {
 	let {user, updateUser} = useContext(RecipeContext);
 	const [stateQuery, setStateQuery] = useState("")
+	const [searchInputRef, setSearchInputRef] = useState(React.createRef());
 	const [stateStyles, setStateStyles] = useState({
 		labelStyle: {
 			fontFamily: "FiraSansCondensed_400Regular",
@@ -55,6 +56,7 @@ const HomeScreen = ({ navigation }) => {
 	useFocusEffect(
 		React.useCallback(() => {
 		  initAuthToken();
+		  console.log("state Query", stateQuery)
 		  //removeAuthToken();
     }));
 	
@@ -63,6 +65,13 @@ const HomeScreen = ({ navigation }) => {
 		navigation.navigate('EnterIngredients')
 	}
 	
+	function resetQueryProps() {
+		let searchInputTmp = searchInputRef;
+		searchInputTmp.current.input.value = '';
+		setSearchInputRef(searchInputTmp);
+		setStateQuery(''); 
+	}
+
 	const onPressMenu = async () => {
 		console.log('menu button')
 		const authDataJson = await initAuthToken();
@@ -88,7 +97,9 @@ const HomeScreen = ({ navigation }) => {
 					'image': require('../assets/profile_placeholder.png'),
 					'email': data.email
 				});
-                navigation.navigate('Profile')
+                navigation.navigate('Profile', {
+					resetQuery: resetQueryProps
+				})
                 
             } else {
                 console.log("ERR")
@@ -108,11 +119,10 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	function onPressSearchBtn() {
-		console.log(stateQuery)
 		fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
-				// console.log(data.results)
+				console.log(data)
 				navigation.navigate('Search', {
 					searchQuery: stateQuery,
 					results: data
@@ -160,7 +170,7 @@ const HomeScreen = ({ navigation }) => {
         })
 	}*/
 
-	function onSearchChange(e) {
+	function onSearchChange(e) {		
 		setStateQuery(e.target.value)
 	}
 	return (
@@ -180,7 +190,7 @@ const HomeScreen = ({ navigation }) => {
 				<View style={{ position: 'relative', width: 260 }}>
 					<Input
 						onChange={onSearchChange}
-
+						ref={searchInputRef}
 						inputContainerStyle={styles.searchInputContainer}
 						inputStyle={styles.searchInput}
 						containerStyle={styles.searchContainer}

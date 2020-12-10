@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 20,
         justifyContent: 'center',
+        overflow: 'hidden',
         // backgroundColor: 'pink',
         height: 150
     },
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         width: '100%',
 		backgroundColor: '#e8efff',
-        padding: 10,
+        padding: 20,
         borderRadius: 10,
         //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.15), 0px 30px 70px rgba(0,0,0,0.1)',
         //marginLeft: 7.5,

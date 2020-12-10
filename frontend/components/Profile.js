@@ -49,6 +49,7 @@ const Profile = ({ route, navigation }) => {
 	}
 	
 	const onPressLogout = async () => {
+        route.params.resetQuery()
 		console.log("OnLogout")
 		const authDataJson = await getAuthData();
 		console.log(authDataJson)
