@@ -153,7 +153,9 @@ def SearchRecipeByIngredients(request):
                             recipe_name= item['recipe_name'], 
                             image= item['image'], 
                             cooking_method= item['cooking_method']
-                    ))            
+                    ))
+            else:
+                raise           
         except:
             return JsonResponse({'message': 'Recipe with these ingredients does not exist'}, status=status.HTTP_404_NOT_FOUND)
         if request.method == 'POST':
@@ -236,7 +238,7 @@ def UsersPage(request):
 @permission_classes((IsAuthenticated,))
 def UserRecipePage(request):
     if request.method == 'GET':
-        user_recipes_id = user_recipes.objects.filter(user_id_id=request.user.id)
+        user_recipes_id = user_recipes.objects.filter(users_id_id=request.user.id)
         user_recipes_id_list = []
 
         for recipe_user_id_pairs in user_recipes_id.values_list():

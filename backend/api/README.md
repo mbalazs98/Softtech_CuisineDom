@@ -1,5 +1,8 @@
 # CuisineDom Backend  
 
+[![Build Status](https://github.com/mbalazs98/Softtech_CuisineDom.svg?branch=master)](https://travis-ci.org/mbalazs98/Softtech_CuisineDom)
+
+
 ## Incase of migration errors:
 ```
 $ python manage.py makemigrations recipes

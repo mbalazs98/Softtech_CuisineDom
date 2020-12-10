@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import users, recipes, user_recipes
+from .models import users, recipes, user_recipes, ingredients
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.test import Client
@@ -87,7 +87,7 @@ class LoginTestCase(TestCase):
         recipe.serving  = '5'
         recipe.save()
 
-        user_recipe = user_recipes.objects.create(recipe_id_id = 1, user_id_id = 1)
+        user_recipe = user_recipes.objects.create(recipe_id_id = 1, users_id_id = 1)
 
         user_recipe.save()
 
@@ -99,9 +99,15 @@ class LoginTestCase(TestCase):
 
 class RecipeTestCase(TestCase):
     def test_get_by_id(self):
-        c = Client()
+        recipes_user = users.objects.create_user(username='test_user', password='test_password', email='test@email.com')
+        recipes_user.save()
+        test_user1 = users.objects.get(username='test_user')
+        test_user1 = authenticate(username='test_user', password='test_password')
+        token = Token.objects.create(user=test_user1)
+        token = Token.objects.get(user__username='test_user')
+        c = Client(HTTP_AUTHORIZATION='Token {}'.format(token.key))
         recipe = recipes.objects.create()
-
+        recipe.recipe_id = 1
         recipe.recipe_name = 'test'
         recipe.cooking_mehtod = 'cook'
         recipe.image = 'test_picture'
@@ -115,16 +121,22 @@ class RecipeTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
     def test_get_by_ingredient(self):
         c = Client()
+        ingredient = ingredients.objects.create()
+        ingredient.ingredient_name = 'd'
+        ingredient.ingredient_id = 1
+        ingredient.save()
         recipe = recipes.objects.create()
+        recipe.recipe_id = 1
         recipe.recipe_name = 't'
         recipe.cooking_mehtod = 'c'
         recipe.image = 't'
-        recipe.string_ingredients = 'd'
+        recipe.string_ingredients = '["d"]'
         recipe.prep_time = '1'
         recipe.serving  = '5'
         recipe.save()
 
-        response = c.get('/recipes/d/ingredients')
+        response = c.post('/recipes/ingredients', 
+        '{"ingredient":[{"ingredient_name":"d","ingredient_id":1}]}', content_type="application/json")
 
         self.assertEqual(response.status_code, 200)
 
