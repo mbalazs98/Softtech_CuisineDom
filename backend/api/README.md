@@ -1,6 +1,6 @@
 # CuisineDom Backend  
 
-[![Build Status](https://github.com/mbalazs98/Softtech_CuisineDom.svg?branch=master)](https://travis-ci.org/mbalazs98/Softtech_CuisineDom)
+![Backend Django Build](https://github.com/mbalazs98/Softtech_CuisineDom/workflows/CuisineDom%20Backend/badge.svg)
 
 
 ## Incase of migration errors:
