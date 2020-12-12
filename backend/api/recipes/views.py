@@ -14,6 +14,8 @@ from rest_framework.authtoken.models import Token
 from pycdi import Inject, Producer
 import string
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
+import base64
+from django.core.files.base import ContentFile
 
 
 @Producer(_context='login_failed')
@@ -224,10 +226,17 @@ def UsersPage(request):
         except ValueError:
             return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':''})
     elif request.method == 'POST':
-        new_profile_picture = request.FILES['image']
+        body = json.loads(request.body)
+        format, imgstr = body.get('image').split(';base64,')
+        ext = format.split('/')[-1]
+
+        data = ContentFile(base64.b64decode(imgstr))
         user = request.user
-        user.profile_picture = new_profile_picture
-        user.save()
+
+        user.profile_picture.delete(save=True)
+
+        user.profile_picture.save(request.user.username + '_pic.' + ext, data, save=True)
+
         return JsonResponse({ 'username': request.user.username, 'email': request.user.email,'profile_picture':request.user.profile_picture.url})
     elif request.method == 'DELETE':
         request.user.profile_picture.delete(save=True)
