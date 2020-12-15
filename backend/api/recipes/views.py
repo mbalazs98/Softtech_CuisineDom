@@ -103,12 +103,14 @@ def LoginPage(request, failed_login: str):
         username = body.get('username')
         password = body.get('password')
         try:
-            user = authenticate(request, username=username, password=password)
+            #user = authenticate(request, username=username, password=password)
             recipes_user = users.objects.get(username=username)
-            if user is not None:
+            if recipes_user is not None:
                 try:
                     token = Token.objects.create(user=recipes_user)
-                except:
+                except Exception as e:
+                    print('here')
+                    print(e)
                     return JsonResponse({'message': failed_login, 'error': 'User already logged in'},
                                  status=status.HTTP_400_BAD_REQUEST)
                 return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token.key})
@@ -169,6 +171,10 @@ def SearchRecipeByIngredients(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def LogOut(request):
+    
+    print(request.user)
+    token = Token.objects.get(user_id=request.user.id)
+    token.delete()
     request.user.auth_token.delete()
     return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
     
