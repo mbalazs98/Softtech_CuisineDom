@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from recipes.serializers import usersSerializer, recipesSerializer, ingredientsSerializer
 from .models import users, recipes, user_recipes, ingredients, recipe_ingredients
 from .forms import UsersRegisterForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, checks
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
@@ -218,29 +218,47 @@ def SearchRecipeByName(request, recipe_name: string):
 
 
 @api_view(['GET','POST','DELETE'])
-@parser_classes([MultiPartParser])
+@permission_classes((IsAuthenticated,))
 def UsersPage(request):
     if request.method == 'GET':
         try:
             return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':request.user.profile_picture.url})
         except ValueError:
             return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':''})
-    elif request.method == 'POST':
-        body = json.loads(request.body)
-        format, imgstr = body.get('image').split(';base64,')
-        ext = format.split('/')[-1]
 
-        data = ContentFile(base64.b64decode(imgstr))
+@api_view(['POST','DELETE'])
+@permission_classes((IsAuthenticated,))
+def UsersSettingsChange(request):
+    if request.method == 'POST':
+        modification_list = []
         user = request.user
+        body = json.loads(request.body)
+        if body.get('profile_picture') != "":
+            format, imgstr = body.get('profile_picture').split(';base64,')
+            ext = format.split('/')[-1]
 
-        user.profile_picture.delete(save=True)
+            data = ContentFile(base64.b64decode(imgstr))
 
-        user.profile_picture.save(request.user.username + '_pic.' + ext, data, save=True)
+            user.profile_picture.delete(save=True)
 
-        return JsonResponse({ 'username': request.user.username, 'email': request.user.email,'profile_picture':request.user.profile_picture.url})
+            user.profile_picture.save(request.user.username + '_pic.' + ext, data, save=True)
+
+            modification_list.append('profile_picture')
+        if body.get('username') != "":
+            user.username = body.get('username')
+            user.save()
+            modification_list.append('username')
+        if body.get('password') != "":
+            if user.check_password(body.get('old_password')):
+                user.set_password(body.get('password'))
+                user.save()
+                modification_list.append('password')
+
+        return JsonResponse({'message' : str(modification_list) + ' attributes has been successfully modified.'})
     elif request.method == 'DELETE':
         request.user.profile_picture.delete(save=True)
         return JsonResponse({'message': 'Profile picture successfully deleted'})
+
 
 
 @api_view(['GET'])
