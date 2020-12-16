@@ -21,7 +21,7 @@ const HomeScreen = ({ navigation }) => {
 			top: 10, left: 60
 		},
 		searchBtnContainer: {
-			display: 'none'
+			
 		}
 	})
 	//const [authDataJson, setAuthDataJson] = useState(null)
@@ -105,14 +105,7 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	function onFocusSearchBtn() {
-		setStateStyles({
-			labelStyle: {
-				display: 'none'
-			},
-			searchBtnContainer: {
-				display: 'block'
-			}
-		})
+		
 	}
 
 	function onPressSearchBtn() {
@@ -169,9 +162,6 @@ const HomeScreen = ({ navigation }) => {
 		})
 	}*/
 
-	function onSearchChange(e) {
-		setStateQuery(e.target.value)
-	}
 	return (
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
@@ -188,14 +178,14 @@ const HomeScreen = ({ navigation }) => {
 				<Text style={{ width: 260, height: 20 }}></Text>
 				<View style={{ position: 'relative', width: 260 }}>
 					<Input
-						onChange={onSearchChange}
+						onChangeText={(val) => setStateQuery(val)}
 						ref={searchInputRef}
 						inputContainerStyle={styles.searchInputContainer}
 						inputStyle={styles.searchInput}
 						containerStyle={styles.searchContainer}
 						// placeholder="Search Recipes"
 						onFocus={onFocusSearchBtn}
-						label="Search Recipes"
+						label=""
 						labelStyle={stateStyles.labelStyle}
 						accessibilityLabel="Search Recipes Input" />
 					<Text style={{ width: 260, height: 20 }}></Text>
@@ -273,7 +263,7 @@ const styles = StyleSheet.create({
 
 	},
 	searchBtnContainer: {
-		display: 'none'
+		
 	},
 	searchInputContainer: {
 		borderWidth: 0,

@@ -10,10 +10,6 @@ const Profile = ({ route, navigation }) => {
 
     let { user, updateUser } = useContext(RecipeContext);
 
-    function onPressAddBtn() {
-
-    }
-
     function onPressEditBtn() {
         navigation.navigate('EditProfile')
     }
@@ -85,7 +81,7 @@ const Profile = ({ route, navigation }) => {
         <View style={styles.container}>
             <View>
                 <TouchableOpacity style={styles.backToHome} onPress={onPressBackToHome}>
-                    <Image source={require('../assets/arrow.svg')} style={styles.icon} />
+                    <Image source={require('../assets/arrow.png')} style={styles.icon} />
                     <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressLogout} style={{ position: 'absolute', right: 10, top: 5 }}>
@@ -97,15 +93,9 @@ const Profile = ({ route, navigation }) => {
                 <Image source={user.image && user.image.length ? { uri: user.image } : require('../assets/profile_placeholder.png')} style={styles.image} />
                 <View style={styles.recipeMainInfo}>
                     <Text style={styles.recipeTitle}>{user.name}</Text>
-                    <Text style={styles.recipeTime}><b>{user.email}</b></Text>
+                    <Text style={styles.recipeTime}>{user.email}</Text>
                 </View>
             </View>
-            <Button buttonStyle={styles.addBtn}
-                containerStyle={styles.addBtnContainer}
-                onPress={onPressAddBtn}
-                title="Add recipe"
-                titleStyle={{ fontFamily: "FiraSansCondensed_400Regular" }}
-                accessibilityLabel="Add recipe button" />
             <Button buttonStyle={styles.editBtn}
                 containerStyle={styles.editBtnContainer}
                 onPress={onPressEditBtn}
@@ -167,16 +157,16 @@ const styles = StyleSheet.create({
     icon: {
         width: 36,
         height: 36,
-        backgroundColor: '#fff',
         // marginTop: 100,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
     },
     userContainer: {
         paddingLeft: 20,
         paddingRight: 20,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        // backgroundColor: 'green'
+
+        backgroundColor: 'white'
     },
     image: {
         backgroundColor: '#e8efff',

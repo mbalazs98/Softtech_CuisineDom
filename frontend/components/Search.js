@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, Image, ScrollView, Dimensions } from 'react-native';
 import SearchItem from './SearchItem';
 
 import { Button } from 'react-native-elements';
@@ -15,9 +15,7 @@ const Search = ({ route, navigation }) => {
         <View style={styles.container}>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Search results for "{route.params.searchQuery}"</Text>
 
-            <ScrollView contentContainerStyle={{
-                flex: 1, justifyContent: 'space-between'
-            }}>
+            <ScrollView contentContainerStyle={{ justifyContent: 'space-between'}}>
                 <View style={styles.itemsContainer}>
                     {route.params.results.map((value, index) => {
                         return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
@@ -44,11 +42,13 @@ const Search = ({ route, navigation }) => {
     )
 }
 
+const windowHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        maxHeight: '100vh',
+        // maxHeight: windowHeight,
         padding: 25,
         paddingTop: 50,
     },

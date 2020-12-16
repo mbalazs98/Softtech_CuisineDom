@@ -73,17 +73,8 @@ const Register = ({ navigation }) => {
         navigation.navigate('Login');
     }
 
-    function onUsernameChange(e) {
-        setStateUsername(e.target.value)
-    }
 
-    function onPasswordChange(e) {
-        setStatePassword(e.target.value)
-    }
 
-    function onEmailChange(e) {
-        setStateEmail(e.target.value)
-    }
 
     return (
         <ScrollView>
@@ -98,12 +89,12 @@ const Register = ({ navigation }) => {
                         containerStyle={styles.searchContainer}
                         placeholder="Enter your username"
                         label="Username"
-                        onChange={onUsernameChange}
+                        onChangeText={(val) => setStateUsername(val)}
                         //labelStyle={stateStyles.labelStyle}
                         accessibilityLabel="Username Input" />
                     <Text style={{ width: 260, height: 20 }}></Text>
                     <Input
-                        onChange={onEmailChange}
+                        onChangeText={(val) => setStateEmail(val)}
                         //inputContainerStyle={styles.searchInputContainer}
                         inputStyle={styles.searchInput}
                         containerStyle={styles.searchContainer}
@@ -113,7 +104,7 @@ const Register = ({ navigation }) => {
                         accessibilityLabel="Email Input" />
                     <Text style={{ width: 260, height: 20 }}></Text>
                     <Input
-                        onChange={onPasswordChange}
+                        onChangeText={(val) => setStatePassword(val)}
                         //inputContainerStyle={styles.searchInputContainer}
                         inputStyle={styles.searchInput}
                         containerStyle={styles.searchContainer}

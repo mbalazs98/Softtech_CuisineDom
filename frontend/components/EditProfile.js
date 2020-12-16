@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 
-import { Form, View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { Form, View, Text, StyleSheet, ScrollView} from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import RecipeContext from './RecipeContext';
-import FileBase64 from 'react-file-base64';
+// import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
@@ -18,31 +19,6 @@ const EditProfile = ({ navigation }) => {
     const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
     const [stateMsg, setStateMsg] = useState("");
     const [newImage, setnewImage] = useState(null);
-
-    function onUsernameChange(e) {
-        // TO BE IMPLEMENTED WITH CASE INSENSITIVE
-
-        // console.log(e.target.value)
-        setNewUsername(e.target.value)
-    }
-
-    function onOldPasswordChange(e) {
-        // TO BE IMPLEMENTED WITH CASE INSENSITIVE
-
-        // console.log(e.target.value)
-        setOldPassword(e.target.value)
-    }
-
-    function onNewPasswordChange(e) {
-        // TO BE IMPLEMENTED WITH CASE INSENSITIVE
-
-        // console.log(e.target.value)
-        setNewPassword(e.target.value)
-    }
-
-    function onNewPasswordConfirmChange(e) {
-        setNewPasswordConfirm(e.target.value);
-    }
 
     function onPressCancel() {
         navigation.navigate('Profile')
@@ -80,7 +56,7 @@ const EditProfile = ({ navigation }) => {
             tmp_user2.name = newUsername;
         }
         if (newPassword.length > 0 && oldPassword.length > 0) {
-            if(newPasswordConfirm === newPassword) {
+            if (newPasswordConfirm === newPassword) {
                 tmp_user.password = newPassword;
                 tmp_user.old_password = oldPassword;
             } else {
@@ -88,7 +64,7 @@ const EditProfile = ({ navigation }) => {
                 return;
             }
         }
-        if (newImage ) {
+        if (newImage) {
             tmp_user.image = newImage;
             tmp_user2.image = newImage;
         }
@@ -112,10 +88,10 @@ const EditProfile = ({ navigation }) => {
                 'Authorization': 'Token ' + authDataJson.token
             }
         })
-            .then((response) => {status = response.status; return response.json()} )
+            .then((response) => { status = response.status; return response.json() })
             .then(data => {
                 console.log(status)
-                if(status == 200) {
+                if (status == 200) {
                     updateUser({
                         'name': tmp_user2.name,
                         'image': tmp_user2.image,
@@ -129,17 +105,28 @@ const EditProfile = ({ navigation }) => {
             })
     }
 
-    function doneImage(file) {
-        setnewImage(file['base64'])
-    }
+    const onPressUploadImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+            base64: true
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            setnewImage('data:image/jpeg;base64,' + result.base64);
+        }
+    };
 
     return (
         <View style={styles.backgroundImage}>
             <Text style={{ marginTop: 25, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Edit Profile</Text>
-            <View style={styles.formContainer}>
-            <Text style={styles.errorMsg}>{stateMsg}</Text>
+            <ScrollView style={styles.formContainer}>
+                <Text style={styles.errorMsg}>{stateMsg}</Text>
                 <Input
-                    onChange={onUsernameChange}
+                    onChangeText={(val) => setNewUsername(val)}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
                     //placeholder="Enter your new username"
@@ -147,7 +134,7 @@ const EditProfile = ({ navigation }) => {
                     accessibilityLabel="Username Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
-                    onChange={onOldPasswordChange}
+                    onChangeText={(val) => setOldPassword(val)}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -158,7 +145,7 @@ const EditProfile = ({ navigation }) => {
                     accessibilityLabel="Old Password Input" />
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
-                    onChange={onNewPasswordChange}
+                    onChangeText={(val) => setNewPassword(val)}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -168,7 +155,7 @@ const EditProfile = ({ navigation }) => {
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="New Password Input" />
                 <Input
-                    onChange={onNewPasswordConfirmChange}
+                    onChangeText={(val) => setNewPasswordConfirm(val)}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -177,12 +164,14 @@ const EditProfile = ({ navigation }) => {
                     secureTextEntry={true}
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="Confirm Password Input" />
-                <FileBase64
-                    multiple={false}
-                    onDone={doneImage} />
+                <Button
+                    buttonStyle={styles.saveBtn}
+                    onPress={onPressUploadImage}
+                    title="Choose Image"
+                    accessibilityLabel="Choose Image" />
                 <Text style={{ width: 260, height: 20 }}></Text>
 
-                <View style={{ position: 'absolute', bottom: 20 }}>
+                <View>
                     <Button buttonStyle={styles.saveBtn}
                         onPress={onPressSave}
                         title="Save"
@@ -195,7 +184,7 @@ const EditProfile = ({ navigation }) => {
                         accessibilityLabel="Cancel Button" />
                 </View>
 
-            </View>
+            </ScrollView>
         </View>
     )
 };
@@ -211,6 +200,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         padding: 25,
+        paddingBottom: 50,
         borderRadius: 7,
         marginBottom: 25,
         marginTop: 35

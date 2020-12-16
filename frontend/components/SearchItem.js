@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }) => {
 	// console.log(`../assets/${itemThumb}.png`)
 
-	const [image, setImage] = useState(require('../assets/food_placeholder.png'));
+	const [image, setImage] = useState('../assets/food_placeholder.png');
 
 	const checkImageURL = async (url) => {
 		try {
@@ -22,14 +22,14 @@ const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }
 		}
 		catch (error) {
 			console.log(error);
-			setImage(require('../assets/food_placeholder.png'));
+			setImage('../assets/food_placeholder.png');
 		}
 	}
 
 	useFocusEffect(
 		React.useCallback(() => {
 			checkImageURL(itemThumb);
-		}))
+		}));
 
 	const getAuthData = async () => {
 		try {
@@ -88,7 +88,7 @@ const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }
 	return (
 		<TouchableOpacity onPress={onPressSearchItem}>
 			<View style={styles.card}>
-				<Image source={image} style={styles.image} />
+				<Image source={{uri: image}} style={styles.image} />
 				<Text style={{ fontFamily: 'FiraSansCondensed_600SemiBold', fontSize: 20, paddingTop: 10, paddingBottom: 5 }}>{itemName}</Text>
 			</View>
 		</TouchableOpacity>

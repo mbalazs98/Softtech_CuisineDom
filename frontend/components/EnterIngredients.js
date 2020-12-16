@@ -48,14 +48,14 @@ const EnterIngredients = ({ route, navigation }) => {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
         // console.log(e.target.value)
-        setSearchInputValue(e.target.value)
+        // setSearchInputValue(e.target.value)
         suggestedDATA = [];
         setSuggestedIngredients(suggestedDATA)
-        if (e.target.value.length > 0) {
+        if (searchInputValue.length > 0) {
 
             for (let i = 0; i < DATA.length && suggestedDATA.length < 5; i++) {
                 // if(DATA[i].title.match(`/[a-z, A-Z, 0-9]*/i${e.target.value}/[a-z, A-Z, 0-9]*/i`)) {
-                if (DATA[i] && DATA[i]['ingredient_name'].match(`[a-z, A-Z, 0-9]*${e.target.value.toLocaleLowerCase()}[a-z, A-Z, 0-9]*`)) {
+                if (DATA[i] && DATA[i]['ingredient_name'].match(`[a-z, A-Z, 0-9]*${searchInputValue.toLocaleLowerCase()}[a-z, A-Z, 0-9]*`)) {
                     suggestedDATA.push(DATA[i])
                     setSuggestedIngredients(suggestedDATA)
                 }
@@ -157,11 +157,12 @@ const EnterIngredients = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backToSearch} onPress={onPressBackToHome}>
-                <Image source={require('../assets/arrow.svg')} style={styles.icon} />
+                <Image source={require('../assets/arrow.png')} style={styles.icon} />
                 <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back to Home</Text>
             </TouchableOpacity>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Enter your ingredients</Text>
             <Input
+                onChangeText={(val) => setSearchInputValue(val)}
                 onChange={onSearchChange}
                 inputContainerStyle={styles.searchInputContainer}
                 inputStyle={styles.searchInput}

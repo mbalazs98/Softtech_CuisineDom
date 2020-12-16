@@ -245,7 +245,7 @@ def UsersSettingsChange(request):
             data = ContentFile(base64.b64decode(imgstr))
 
             user.profile_picture.delete(save=True)
-            user.profile_picture.save(request.user.username + '_pic.' + ext, data, save=True)
+            user.profile_picture.save(request.user.username + '_pic' + ext, data, save=True)
 
             modification_list.append('profile_picture')
         if body.get('username') != "":
