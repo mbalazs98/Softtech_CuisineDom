@@ -4,16 +4,19 @@ import { Form, View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground 
 import { Button, Input } from 'react-native-elements';
 import RecipeContext from './RecipeContext';
 import FileBase64 from 'react-file-base64';
+import AsyncStorage from '@react-native-community/async-storage';
 
-									   
+
 
 const EditProfile = ({ navigation }) => {
 
-    let {user, updateUser} = useContext(RecipeContext)
+    let { user, updateUser } = useContext(RecipeContext)
 
     const [newUsername, setNewUsername] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+    const [stateMsg, setStateMsg] = useState("");
     const [newImage, setnewImage] = useState(null);
 
     function onUsernameChange(e) {
@@ -37,40 +40,91 @@ const EditProfile = ({ navigation }) => {
         setNewPassword(e.target.value)
     }
 
+    function onNewPasswordConfirmChange(e) {
+        setNewPasswordConfirm(e.target.value);
+    }
+
     function onPressCancel() {
         navigation.navigate('Profile')
     }
 
-
-    function onPressSave() {
-        if (newUsername.length > 0 && newPassword.length > 0 && oldPassword == user.password) {
-            updateUser({
-                'name': newUsername,
-                'image': newImage,
-                'password': newPassword
-            })
-            // TODO when the api endpoint is implemented
-            // fetch(`http://127.0.0.1:8000/user/edit/`, {
-            //     method: 'POST',
-            //     body: JSON.stringify({
-                    //     'username': user.name,
-                    //     'password': user.password,
-                    //     'image': user.image
-                    // }),
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Accept': 'application/json',
-            //         'X-Requested-With': 'XMLHttpRequest'
-            //     }
-            // })
-            //     .then((response) => response.json())
-            //     .then(data => {
-            //         console.log(data)
-            //         navigation.navigate('Profile')
-            //     })
-
-            navigation.goBack();
+    const initAuthToken = async () => {
+        console.log('user ', user)
+        try {
+            const authData = await AsyncStorage.getItem('authentication_data');
+            if (authData !== null) {
+                console.log(authData);
+                const authDataJson = JSON.parse(authData);
+                return authDataJson;
+            }
+            else {
+                navigation.navigate('Login')
+            }
         }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+
+
+    const onPressSave = async () => {
+        let tmp_user = {
+            username: '',
+            password: '',
+            image: ''
+        };
+        let tmp_user2 = user;
+        if (newUsername.length > 0) {
+            tmp_user.username = newUsername;
+            tmp_user2.name = newUsername;
+        }
+        if (newPassword.length > 0 && oldPassword.length > 0) {
+            if(newPasswordConfirm === newPassword) {
+                tmp_user.password = newPassword;
+                tmp_user.old_password = oldPassword;
+            } else {
+                setStateMsg('Passwords don\'t match!')
+                return;
+            }
+        }
+        if (newImage ) {
+            tmp_user.image = newImage;
+            tmp_user2.image = newImage;
+        }
+
+        const authDataJson = await initAuthToken();
+        let status = 200;
+        fetch(`http://127.0.0.1:8000/user/change_settings/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                'username': tmp_user.username,
+                'password': tmp_user.password,
+                'old_password': tmp_user.old_password,
+                'profile_picture': tmp_user.image
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Authorization': 'Token ' + authDataJson.token
+            }
+        })
+            .then((response) => {status = response.status; return response.json()} )
+            .then(data => {
+                console.log(status)
+                if(status == 200) {
+                    updateUser({
+                        'name': tmp_user2.name,
+                        'image': tmp_user2.image,
+                        'email': user.email
+                    })
+                    navigation.navigate('Profile')
+                }
+                else {
+                    setStateMsg(data.message)
+                }
+            })
     }
 
     function doneImage(file) {
@@ -81,6 +135,7 @@ const EditProfile = ({ navigation }) => {
         <View style={styles.backgroundImage}>
             <Text style={{ marginTop: 25, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Edit Profile</Text>
             <View style={styles.formContainer}>
+            <Text style={styles.errorMsg}>{stateMsg}</Text>
                 <Input
                     onChange={onUsernameChange}
                     inputStyle={styles.searchInput}
@@ -111,6 +166,7 @@ const EditProfile = ({ navigation }) => {
                     //labelStyle={stateStyles.labelStyle}
                     accessibilityLabel="New Password Input" />
                 <Input
+                    onChange={onNewPasswordConfirmChange}
                     //inputContainerStyle={styles.searchInputContainer}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
@@ -238,6 +294,12 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 16,
     },
+    errorMsg: {
+        color: 'red',
+        maxWidth: 260,
+        textAlign: 'center',
+        marginBottom: 15
+    }
 
 })
 

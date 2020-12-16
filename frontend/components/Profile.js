@@ -92,7 +92,7 @@ const Profile = ({ route, navigation }) => {
             </View>
 			{/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.userContainer}>
-                <Image source={{ uri: user.image, cache: 'reload' }} style={styles.image} />
+            <Image source={{uri: user.image}} style={styles.image} />
                 <View style={styles.recipeMainInfo}>
                     <Text style={styles.recipeTitle}>{user.name}</Text>
                     <Text style={styles.recipeTime}><b>{user.email}</b></Text>

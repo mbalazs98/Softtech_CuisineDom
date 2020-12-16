@@ -7,7 +7,7 @@ import { Button, Input } from 'react-native-elements';
 import RecipeContext from './RecipeContext';
 
 const HomeScreen = ({ navigation }) => {
-	let {user, updateUser} = useContext(RecipeContext);
+	let { user, updateUser } = useContext(RecipeContext);
 	const [stateQuery, setStateQuery] = useState("")
 	const [searchInputRef, setSearchInputRef] = useState(React.createRef());
 	const [stateStyles, setStateStyles] = useState({
@@ -26,6 +26,7 @@ const HomeScreen = ({ navigation }) => {
 	})
 	//const [authDataJson, setAuthDataJson] = useState(null)
 	const initAuthToken = async () => {
+		console.log('user ', user)
 		try {
 			const authData = await AsyncStorage.getItem('authentication_data');
 			if (authData !== null) {
@@ -39,72 +40,68 @@ const HomeScreen = ({ navigation }) => {
 		}
 		catch (error) {
 			console.log(error);
-		  }
-	}
-	
-	/*const removeAuthToken = async () => {
-		try {
-			await AsyncStorage.removeItem('authentication_data');
 		}
-		catch (error) {
-			console.log(error);
-		  }
-	}*/
-	/*useEffect(() => {
-        initAuthToken();
-    });*/
+	}
+
 	useFocusEffect(
 		React.useCallback(() => {
-		  initAuthToken();
-		  console.log("state Query", stateQuery)
-		  //removeAuthToken();
-    }));
-	
+			initAuthToken();
+			console.log("state Query", stateQuery)
+		}));
+
 	function onPressEnterIngredients() {
 		console.log('enter ingredients button')
 		navigation.navigate('EnterIngredients')
 	}
-	
+
 	function resetQueryProps() {
 		let searchInputTmp = searchInputRef;
 		searchInputTmp.current.input.value = '';
 		setSearchInputRef(searchInputTmp);
-		setStateQuery(''); 
+		updateUser({});
+		setStateQuery('');
 	}
 
 	const onPressMenu = async () => {
 		console.log('menu button')
 		const authDataJson = await initAuthToken();
-		fetch(`http://127.0.0.1:8000/user/`, {
-			method: 'GET',
-			//credentials: 'same-origin',
-			headers: {
-			//"X-CSRFToken": Cookies.get("csrftoken"),
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-			'X-Requested-With': 'XMLHttpRequest',
-			'Authorization': 'Token '+authDataJson.token 
-			}
-		}).then(data => {
-            status = data.status;
-            return data.json()
-        }).then(data=> {
-            if(status == 200) {
-				console.log("success")
-                console.log(data);
-				updateUser({
-					'name': data.username,
-					'image': require('../assets/profile_placeholder.png'),
-					'email': data.email
-				});
-                navigation.navigate('Profile', {
-					resetQuery: resetQueryProps
-				})
-                
-            } else {
-                console.log("ERR")
-            }
-        })
+		if (Object.keys(user).length === 0 && user.constructor === Object) {
+			fetch(`http://127.0.0.1:8000/user/`, {
+				method: 'GET',
+				//credentials: 'same-origin',
+				headers: {
+					//"X-CSRFToken": Cookies.get("csrftoken"),
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest',
+					'Authorization': 'Token ' + authDataJson.token
+				}
+			}).then(data => {
+				status = data.status;
+				return data.json()
+			}).then(data => {
+				if (status == 200) {
+					console.log("success")
+					console.log(data);
+					updateUser({
+						'name': data.username,
+						'image': data.profile_picture,
+						'email': data.email
+					});
+					navigation.navigate('Profile', {
+						resetQuery: resetQueryProps
+					})
+
+				} else {
+					console.log("ERR")
+				}
+			})
+		} else {
+			navigation.navigate('Profile', {
+				resetQuery: resetQueryProps
+			})
+
+		}
 	}
 
 	function onFocusSearchBtn() {
@@ -139,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
 			})*/
 
 	}
-	
+
 	/*const onPressLogout = async () => {
 		console.log("OnLogout")
 		const authDataJson = await initAuthToken();
@@ -155,30 +152,30 @@ const HomeScreen = ({ navigation }) => {
 			'Authorization': 'Token '+authDataJson.token 
 			}
 		}).then(data => {
-            status = data.status;
-            return data.json()
-        }).then(data=> {
-            if(status == 200) {
+			status = data.status;
+			return data.json()
+		}).then(data=> {
+			if(status == 200) {
 				console.log("success")
-                console.log(data);
+				console.log(data);
 				removeAuthToken();
-                navigation.navigate('Login')
-                
-            } else {
-                console.log("ERR")
-            }
-        })
+				navigation.navigate('Login')
+			    
+			} else {
+				console.log("ERR")
+			}
+		})
 	}*/
 
-	function onSearchChange(e) {		
+	function onSearchChange(e) {
 		setStateQuery(e.target.value)
 	}
 	return (
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
-				<TouchableOpacity onPress={onPressMenu} style={{position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
-					<Image source={require('../assets/menu_dots.png')}  style={styles.menuDots} />
+				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right' }}>
+					<Image source={require('../assets/menu_dots.png')} style={styles.menuDots} />
 				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />
 				<Button buttonStyle={styles.enterBtn}
