@@ -8,22 +8,22 @@ import RecipeContext from './RecipeContext';
 import Constants from "expo-constants";
 const { manifest } = Constants;
 
-const Register = ({navigation}) => {
+const Register = ({ navigation }) => {
 
     const [stateUsername, setStateUsername] = useState("");
     const [statePassword, setStatePassword] = useState("");
     const [stateEmail, setStateEmail] = useState("");
     const [stateMsg, setStateMsg] = useState("");
 
-	const setAuthToken = async (data) => {
-		try {
-			await AsyncStorage.setItem('authentication_data', JSON.stringify({token: data.token}));
-		}
-		catch (error) {
-			console.log(error);
-		  }
-	}
-	
+    const setAuthToken = async (data) => {
+        try {
+            await AsyncStorage.setItem('authentication_data', JSON.stringify({ token: data.token }));
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     function onPressRegister() {
         // console.log(stateUsername)
         // console.log(statePassword)
@@ -34,7 +34,9 @@ const Register = ({navigation}) => {
             : `api.example.com`;
             console.log(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))
             setStateMsg(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))*/
-        fetch('http://127.0.0.1:8000/register/', {
+        // fetch('http://127.0.0.1:8000/register/', {
+        let api = 'http://10.40.255.123:8000/register/'
+        fetch(api, {
             method: 'POST',
             body: JSON.stringify({
                 'username': stateUsername,
@@ -51,92 +53,92 @@ const Register = ({navigation}) => {
         }).then(data => {
             status = data.status;
             return data.json()
-        }).then(data=> {
-            if(status == 400) {
+        }).then(data => {
+            if (status == 400) {
                 console.log(data.error)
                 setStateMsg(data.error)
             } else {
                 console.log("success")
                 console.log(data);
-				setAuthToken(data)
+                setAuthToken(data)
                 navigation.navigate('Home')
             }
         })
- //       navigation.navigate('Home')
- 
+        //       navigation.navigate('Home')
+
     }
 
-    
+
     function onPressLogin() {
         navigation.navigate('Login');
     }
 
     function onUsernameChange(e) {
-		setStateUsername(e.target.value)
+        setStateUsername(e.target.value)
     }
-    
+
     function onPasswordChange(e) {
-		setStatePassword(e.target.value)
+        setStatePassword(e.target.value)
     }
-    
+
     function onEmailChange(e) {
-		setStateEmail(e.target.value)
-	}
+        setStateEmail(e.target.value)
+    }
 
     return (
         <ScrollView>
-        <ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
-            <View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
-            <Image source={require('../assets/logo2.png')} style={styles.image} />
-            <ScrollView style={styles.formContainer}>
-                <Text style={styles.errorMsg}>{stateMsg}</Text>
-                <Input
-                    //inputContainerStyle={styles.searchInputContainer}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    placeholder="Enter your username"
-                    label="Username"
-                    onChange={onUsernameChange}
-                    //labelStyle={stateStyles.labelStyle}
-                    accessibilityLabel="Username Input" />
-                <Text style={{ width: 260, height: 20 }}></Text>
-                <Input
-                onChange={onEmailChange}
-                    //inputContainerStyle={styles.searchInputContainer}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    placeholder="Enter your email"
-                    label="Email"
-                    //labelStyle={stateStyles.labelStyle}
-                    accessibilityLabel="Email Input" />
-                <Text style={{ width: 260, height: 20 }}></Text>
-                <Input
-                onChange={onPasswordChange}
-                    //inputContainerStyle={styles.searchInputContainer}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    placeholder="Enter your password"
-                    label="Password"
-                    secureTextEntry={true}
-                    //labelStyle={stateStyles.labelStyle}
-                    accessibilityLabel="Password Input" />
-                <Text style={{ width: 260, height: 20 }}></Text>
+            <ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
+                <View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
+                <Image source={require('../assets/logo2.png')} style={styles.image} />
+                <ScrollView style={styles.formContainer}>
+                    <Text style={styles.errorMsg}>{stateMsg}</Text>
+                    <Input
+                        //inputContainerStyle={styles.searchInputContainer}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        placeholder="Enter your username"
+                        label="Username"
+                        onChange={onUsernameChange}
+                        //labelStyle={stateStyles.labelStyle}
+                        accessibilityLabel="Username Input" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
+                    <Input
+                        onChange={onEmailChange}
+                        //inputContainerStyle={styles.searchInputContainer}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        placeholder="Enter your email"
+                        label="Email"
+                        //labelStyle={stateStyles.labelStyle}
+                        accessibilityLabel="Email Input" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
+                    <Input
+                        onChange={onPasswordChange}
+                        //inputContainerStyle={styles.searchInputContainer}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        placeholder="Enter your password"
+                        label="Password"
+                        secureTextEntry={true}
+                        //labelStyle={stateStyles.labelStyle}
+                        accessibilityLabel="Password Input" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
 
-                <Button buttonStyle={styles.enterBtn}
-                    onPress={onPressRegister}
-                    title="Register"
-                    titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
-                    accessibilityLabel="Register Button" />
-                <Text style={{ width: 260, height: 20 }}></Text>
+                    <Button buttonStyle={styles.enterBtn}
+                        onPress={onPressRegister}
+                        title="Register"
+                        titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
+                        accessibilityLabel="Register Button" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
 
-                <Button buttonStyle={styles.searchBtn}
-                    //containerStyle={stateStyles.searchBtnContainer}
-                    onPress={onPressLogin}
-                    title="Already have an account? Login"
-                    titleStyle={{ color: '#6974e8', fontFamily: "FiraSansCondensed_400Regular", fontSize: 14 }}
-                    accessibilityLabel="Login Button" />
-            </ScrollView>
-        </ImageBackground>
+                    <Button buttonStyle={styles.searchBtn}
+                        //containerStyle={stateStyles.searchBtnContainer}
+                        onPress={onPressLogin}
+                        title="Already have an account? Login"
+                        titleStyle={{ color: '#6974e8', fontFamily: "FiraSansCondensed_400Regular", fontSize: 14 }}
+                        accessibilityLabel="Login Button" />
+                </ScrollView>
+            </ImageBackground>
         </ScrollView>
     )
 };

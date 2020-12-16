@@ -103,6 +103,7 @@ def LoginPage(request, failed_login: str):
         username = body.get('username')
         password = body.get('password')
         try:
+            print(username, password)
             user = authenticate(request, username=username, password=password)
             recipes_user = users.objects.get(username=username)
             if user is not None:

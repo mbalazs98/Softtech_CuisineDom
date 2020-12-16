@@ -7,8 +7,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 
 const Profile = ({ route, navigation }) => {
-											
-    let {user, updateUser} = useContext(RecipeContext);
+
+    let { user, updateUser } = useContext(RecipeContext);
 
     function onPressAddBtn() {
 
@@ -21,78 +21,80 @@ const Profile = ({ route, navigation }) => {
     function onPressBackToHome() {
         navigation.navigate('Home')
     }
-	
-	const getAuthData = async () => {
-		try {
-			const authData = await AsyncStorage.getItem('authentication_data');
-			if (authData !== null) {
-				console.log(authData);
-				const authDataJson = JSON.parse(authData);
-				return authDataJson;
-			}
-			else {
-				navigation.navigate('Login')
-			}
-		}
-		catch (error) {
-			console.log(error);
-		  }
-	}
-	
-	const removeAuthToken = async () => {
-		try {
-			await AsyncStorage.removeItem('authentication_data');
-		}
-		catch (error) {
-			console.log(error);
-		  }
-	}
-	
-	const onPressLogout = async () => {
+
+    const getAuthData = async () => {
+        try {
+            const authData = await AsyncStorage.getItem('authentication_data');
+            if (authData !== null) {
+                console.log(authData);
+                const authDataJson = JSON.parse(authData);
+                return authDataJson;
+            }
+            else {
+                navigation.navigate('Login')
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    const removeAuthToken = async () => {
+        try {
+            await AsyncStorage.removeItem('authentication_data');
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    const onPressLogout = async () => {
         route.params.resetQuery()
-		console.log("OnLogout")
-		const authDataJson = await getAuthData();
-		console.log(authDataJson)
-		fetch(`http://127.0.0.1:8000/logout/`, {
-			method: 'POST',
-			//credentials: 'same-origin',
-			headers: {
-			//"X-CSRFToken": Cookies.get("csrftoken"),
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-			'X-Requested-With': 'XMLHttpRequest',
-			'Authorization': 'Token '+authDataJson.token 
-			}
-		}).then(data => {
+        console.log("OnLogout")
+        const authDataJson = await getAuthData();
+
+        // fetch(`http://127.0.0.1:8000/logout/`, {
+        let api = 'http://10.40.255.123:8000/logout/'
+        fetch(api, {
+            method: 'POST',
+            //credentials: 'same-origin',
+            headers: {
+                //"X-CSRFToken": Cookies.get("csrftoken"),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Authorization': 'Token ' + authDataJson.token
+            }
+        }).then(data => {
             status = data.status;
             return data.json()
-        }).then(data=> {
-            if(status == 200) {
-				console.log("success")
+        }).then(data => {
+            if (status == 200) {
+                console.log("success")
                 console.log(data);
-				removeAuthToken();
+                removeAuthToken();
                 navigation.navigate('Login')
-                
+
             } else {
                 console.log("ERR")
             }
         })
-	}
+    }
 
     return (
         <View style={styles.container}>
-			<View>
-				<TouchableOpacity style={styles.backToHome} onPress={onPressBackToHome}>
-					<Image source={require('../assets/arrow.svg')} style={styles.icon} />
-					<Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back</Text>
-				</TouchableOpacity>
-				<TouchableOpacity onPress={onPressLogout} style={{position: 'absolute', right: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right'}}>
-					<Image source={require('../assets/logout_btn.png')} style={styles.icon} />
-				</TouchableOpacity>
+            <View>
+                <TouchableOpacity style={styles.backToHome} onPress={onPressBackToHome}>
+                    <Image source={require('../assets/arrow.svg')} style={styles.icon} />
+                    <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressLogout} style={{ position: 'absolute', right: 10, top: 5 }}>
+                    <Image source={require('../assets/logout_btn.png')} style={styles.icon} />
+                </TouchableOpacity>
             </View>
-			{/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
+            {/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.userContainer}>
-            <Image source={user.image && user.image.length ? {uri: user.image} : require('../assets/profile_placeholder.png')} style={styles.image} />
+                <Image source={user.image && user.image.length ? { uri: user.image } : require('../assets/profile_placeholder.png')} style={styles.image} />
                 <View style={styles.recipeMainInfo}>
                     <Text style={styles.recipeTitle}>{user.name}</Text>
                     <Text style={styles.recipeTime}><b>{user.email}</b></Text>

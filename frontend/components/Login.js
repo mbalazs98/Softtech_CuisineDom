@@ -4,6 +4,9 @@ import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import Constants from "expo-constants";
+const { manifest } = Constants;
+
 const Login = ({navigation}) => {
 
 	const [username, setUsername] = useState(null);
@@ -19,27 +22,17 @@ const Login = ({navigation}) => {
 		  }
 	}
 	
-	function onUsernameChange(e) {
-        console.log(e.target.value)
-        setUsername(e.target.value)
-    }
-	
-	function onPasswordChange(e) {
-        console.log(e.target.value)
-        setPassword(e.target.value)
-    }
-	
 	function onPressLogin() {
-		let status;
-		fetch(`http://127.0.0.1:8000/login/`, {
+        let status;
+        let api = 'http://10.40.255.123:8000/login/'
+        
+        fetch(api, {
 			method: 'POST',
 			body: JSON.stringify({
 				'username': username,
 				'password': password
 			}),
-			//credentials: 'same-origin',
 			headers: {
-			//"X-CSRFToken": Cookies.get("csrftoken"),
 			'Content-Type': 'application/json',
 			'Accept': 'application/json',
 			'X-Requested-With': 'XMLHttpRequest'
@@ -57,7 +50,7 @@ const Login = ({navigation}) => {
 					setAuthToken(data)
 					navigation.navigate('Home')
 				}
-		})
+		}).catch(err => console.log(err))
 	}
 
     function onPressRegister() {
@@ -73,7 +66,7 @@ const Login = ({navigation}) => {
 				<Text style={styles.errorMsg}>{stateMsg}</Text>
                 <Input
                     //inputContainerStyle={styles.searchInputContainer}
-					onChange={onUsernameChange}
+                    onChangeText={(val) => setUsername(val)}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
                     placeholder="Enter username"
@@ -83,7 +76,7 @@ const Login = ({navigation}) => {
                 <Text style={{ width: 260, height: 20 }}></Text>
                 <Input
                     //inputContainerStyle={styles.searchInputContainer}
-					onChange={onPasswordChange}
+                    onChangeText={(val) => setPassword(val)}
                     inputStyle={styles.searchInput}
                     containerStyle={styles.searchContainer}
                     placeholder="Enter your password"

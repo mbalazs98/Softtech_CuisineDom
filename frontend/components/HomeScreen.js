@@ -17,8 +17,8 @@ const HomeScreen = ({ navigation }) => {
 			color: '#fff',
 			fontSize: 20,
 			position: 'absolute',
-			transform: "translate(-50%, -50%)",
-			top: "50%", left: "50%"
+			// transform: "translate(-50%, -50%)",
+			top: 10, left: 60
 		},
 		searchBtnContainer: {
 			display: 'none'
@@ -66,11 +66,11 @@ const HomeScreen = ({ navigation }) => {
 		console.log('menu button')
 		const authDataJson = await initAuthToken();
 		if (Object.keys(user).length === 0 && user.constructor === Object) {
-			fetch(`http://127.0.0.1:8000/user/`, {
+			// fetch(`http://127.0.0.1:8000/user/`, {
+			let api = 'http://10.40.255.123:8000/user/'
+			fetch(api, {
 				method: 'GET',
-				//credentials: 'same-origin',
 				headers: {
-					//"X-CSRFToken": Cookies.get("csrftoken"),
 					'Content-Type': 'application/json',
 					'Accept': 'application/json',
 					'X-Requested-With': 'XMLHttpRequest',
@@ -116,7 +116,9 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	function onPressSearchBtn() {
-		fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
+		// fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
+		let api = `http://10.40.255.123:8000/recipes/${stateQuery}/search`
+		fetch(api)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
 				console.log(data)
@@ -174,7 +176,7 @@ const HomeScreen = ({ navigation }) => {
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
-				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10, top: 5, flexDirection: 'row-reverse', alignItems: 'right' }}>
+				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10, top: 5 }}>
 					<Image source={require('../assets/menu_dots.png')} style={styles.menuDots} />
 				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />
@@ -283,7 +285,8 @@ const styles = StyleSheet.create({
 	},
 	menuDots: {
 		width: 70,
-		height: 70
+		height: 70,
+		marginTop: 50
 	}
 
 })

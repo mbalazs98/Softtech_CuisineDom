@@ -95,7 +95,9 @@ const EditProfile = ({ navigation }) => {
 
         const authDataJson = await initAuthToken();
         let status = 200;
-        fetch(`http://127.0.0.1:8000/user/change_settings/`, {
+        let api = 'http://10.40.255.123:8000/user/change_settings/'
+        // fetch(`http://127.0.0.1:8000/user/change_settings/`, {
+        fetch(api, {
             method: 'POST',
             body: JSON.stringify({
                 'username': tmp_user.username,

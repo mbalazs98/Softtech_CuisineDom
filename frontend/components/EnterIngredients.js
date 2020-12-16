@@ -33,10 +33,15 @@ const EnterIngredients = ({ route, navigation }) => {
     //		.then((response) => response.json())
     //DATA = JSON.parse(qu)
     useEffect(() => {
-        if (DATA.length == 0)
-            fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+        if (DATA.length == 0) {
+            // fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+
+            let api = 'http://10.40.255.123:8000/recipes/get_ingredients';
+            fetch(api)
                 .then((response) => response.json())
                 .then(data => { DATA = data; console.log('data loaded!'); })
+        }
+
     });
 
     function onSearchChange(e) {
@@ -82,8 +87,8 @@ const EnterIngredients = ({ route, navigation }) => {
         selectedTmp = selectedTmp.filter(item => item.ingredient_id != id)
         console.log('2 addition')
         setSelectedIngredients(selectedTmp);
-								
-										
+
+
         selectedDATA = new Set();
         selectedTmp.forEach(item => {
             selectedDATA.add(item['ingredient_id'])
@@ -114,8 +119,10 @@ const EnterIngredients = ({ route, navigation }) => {
 
     function onPressFindBtn() {
         console.log(selectedIngredients.length)
-        if (selectedIngredients.length > 0)
-            fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+        if (selectedIngredients.length > 0) {
+            // fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+            let api = 'http://10.40.255.123:8000/recipes/ingredients'
+            fetch(api, {
                 method: 'POST',
                 body: JSON.stringify({
                     'ingredient': selectedIngredients
@@ -127,14 +134,6 @@ const EnterIngredients = ({ route, navigation }) => {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
-		  
-												
-						   
-								 
-											   
-													
-								 
-				  
             })
                 .then((response) => response.json())
                 .then(data => {
@@ -144,6 +143,9 @@ const EnterIngredients = ({ route, navigation }) => {
                         results: data
                     })
                 })
+        }
+
+
     }
 
     function onPressBackToHome() {
