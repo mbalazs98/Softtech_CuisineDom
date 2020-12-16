@@ -20,8 +20,9 @@ from rest_framework import routers
 import sys, os
 sys.path.append(os.path.abspath(os.path.join('..', 'recipes')))
 from recipes import views
-
-
+from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -46,3 +47,6 @@ urlpatterns = [
     path('recipes/get_ingredients', views.GetIngredients)
 
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

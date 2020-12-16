@@ -16,7 +16,7 @@ import string
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
 import base64
 from django.core.files.base import ContentFile
-
+from django.conf import settings
 
 @Producer(_context='login_failed')
 def get_login_failed():
@@ -103,14 +103,12 @@ def LoginPage(request, failed_login: str):
         username = body.get('username')
         password = body.get('password')
         try:
-            #user = authenticate(request, username=username, password=password)
+            user = authenticate(request, username=username, password=password)
             recipes_user = users.objects.get(username=username)
-            if recipes_user is not None:
+            if user is not None:
                 try:
                     token = Token.objects.create(user=recipes_user)
                 except Exception as e:
-                    print('here')
-                    print(e)
                     return JsonResponse({'message': failed_login, 'error': 'User already logged in'},
                                  status=status.HTTP_400_BAD_REQUEST)
                 return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token.key})
@@ -228,7 +226,7 @@ def SearchRecipeByName(request, recipe_name: string):
 def UsersPage(request):
     if request.method == 'GET':
         try:
-            return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':request.user.profile_picture.url})
+            return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture': 'http://' + request.get_host() + request.user.profile_picture.url})
         except ValueError:
             return JsonResponse({'username': request.user.username, 'email': request.user.email, 'profile_picture':''})
 
@@ -246,7 +244,6 @@ def UsersSettingsChange(request):
             data = ContentFile(base64.b64decode(imgstr))
 
             user.profile_picture.delete(save=True)
-
             user.profile_picture.save(request.user.username + '_pic.' + ext, data, save=True)
 
             modification_list.append('profile_picture')
@@ -259,8 +256,10 @@ def UsersSettingsChange(request):
                 user.set_password(body.get('password'))
                 user.save()
                 modification_list.append('password')
+            else:
+                return JsonResponse({'message': 'Wrong password!'}, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse({'message' : str(modification_list) + ' attributes has been successfully modified.'})
+        return JsonResponse({'message' : ', '.join(modification_list) + ' attributes has been successfully modified.'})
     elif request.method == 'DELETE':
         request.user.profile_picture.delete(save=True)
         return JsonResponse({'message': 'Profile picture successfully deleted'})
