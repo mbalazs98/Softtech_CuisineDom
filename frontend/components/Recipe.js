@@ -54,16 +54,15 @@ const Recipe = ({ route, navigation }) => {
             </TouchableOpacity>
             {/* <Image source={require(`../assets/${itemThumb}.png`)} style={styles.image} /> */}
             <View style={styles.recipeContainer}>
-			
-				<View>
-					<Image source={image} style={styles.image} />
-					<Text style={styles.recipeTime}><b>{route.params.recipeServing}</b></Text>
-				</View>
-				<View style={styles.recipeMainInfo}>
-					<Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
-					<Text style={styles.recipeTime}>Time to make: <b>{prepTime}</b></Text>
-					
-				</View>
+					<View style={{justifyContent: 'center', alignItems: 'center'}}>
+						<Image source={image} style={styles.image} />
+						<Text style={styles.recipeTime}><b>{route.params.recipeServing}</b></Text>
+					</View>
+					<View style={styles.recipeMainInfo}>
+						<Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
+						<Text style={styles.recipeTime}>Time to make: <b>{prepTime}</b></Text>
+						
+					</View>
 			
 				<View style={styles.recipeDescriptionContainer}>
 					<Text style={styles.recipeDescriptionTitle}>Ingredients</Text>
@@ -118,9 +117,9 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 20,
         justifyContent: 'center',
-        overflow: 'hidden',
+        //overflow: 'hidden',
         // backgroundColor: 'pink',
-        height: 150
+        //height: 150
     },
     recipeTitle: {
         fontFamily: 'FiraSansCondensed_600SemiBold',
