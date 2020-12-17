@@ -104,7 +104,7 @@ def LoginPage(request, failed_login: str):
         username = body.get('username')
         password = body.get('password')
         try:
-            recipes_user = EmailOrUsernameAuthBackend.authenticate(request, username=username, password=password)
+            recipes_user = authenticate(request, username=username, password=password)
             if recipes_user is not None:
                 try:
                     token = Token.objects.create(user=recipes_user)
@@ -174,8 +174,6 @@ def LogOut(request):
     token.delete()
     request.user.auth_token.delete()
     return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
-    
-from gensim import models
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
@@ -186,8 +184,6 @@ def RecipeID(request, recipe_id):
         return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         recipes_serializer = recipesSerializer(recipe)
-        model =  models.LdaModel.load('models/lda/lda.model')
-        print(model.print_topic(65, topn=20))
         return JsonResponse(recipes_serializer.data)
     elif request.method == 'PUT':
         recipe_data = JSONParser().parse(request)

@@ -91,7 +91,7 @@ class LoginTestCase(TestCase):
 
         user_recipe.save()
 
-        response = c.get('/user/recipes')
+        response = c.get('/user/recipes/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b'[{"recipe_id": 1, "recipe_name": "test_recipe", "cooking_method": "cook", "image": "test_picture",'
