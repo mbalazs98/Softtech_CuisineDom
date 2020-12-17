@@ -25,10 +25,11 @@ const Recipe = ({ route, navigation }) => {
         try {
             await fetch(url)
                 .then(res => {
-                    if (res.status == 200) {
-                        console.log(url)
-                        setImage(url)
-                    }
+                    if (res.status == 200 && !res.url.includes('not-available')) {
+						setImage(url)
+					} else {
+						setImage('../assets/food_placeholder.png');			
+					}
                 })
             //.catch(err=>{setImage('../assets/food_placeholder.png') })
         }
