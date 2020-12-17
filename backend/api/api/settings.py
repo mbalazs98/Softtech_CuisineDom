@@ -144,6 +144,8 @@ STATIC_URL = '/static/'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+AUTHENTICATION_BACKENDS = ['recipes.authentication.EmailOrUsernameAuthBackend']
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:19006',
