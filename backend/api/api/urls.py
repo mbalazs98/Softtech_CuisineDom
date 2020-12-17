@@ -38,6 +38,7 @@ urlpatterns = [
     path('user/recipes/', views.UserRecipePage),
     path('user/delete_recipe/', views.DeleteUserRecipe),
     path('user/add_recipe/', views.AddUserRecipe),
+    path('user/is_fav/<recipe_id>', views.IsUserFavouriteRecipe),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

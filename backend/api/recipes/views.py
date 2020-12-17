@@ -303,3 +303,11 @@ def AddUserRecipe(request):
         except:
             return JsonResponse({'message': 'There is no recipe with the given id.'})
 
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def IsUserFavouriteRecipe(request, recipe_id):
+    try:
+        user_recipes.objects.get(recipe_id_id=recipe_id, users_id_id=request.user.id)
+        return JsonResponse({'is_favourite_recipe': 1})
+    except:
+        return JsonResponse({'is_favourite_recipe': 0})
