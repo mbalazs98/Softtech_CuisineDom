@@ -51,9 +51,9 @@ const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }
 	const onPressSearchItem = async () => {
 		console.log(itemID)
 		const authDataJson = await getAuthData();
-		// fetch(`http://127.0.0.1:8000/recipes/${itemID}/recipeID`, {
 		let api = `http://10.40.255.123:8000/recipes/${itemID}/recipeID`
-		fetch(api, {
+		fetch(`http://127.0.0.1:8000/recipes/${itemID}/recipeID`, {
+		//fetch(api, {
 
 			method: 'GET',
 			//credentials: 'same-origin',
@@ -90,7 +90,7 @@ const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }
 	return (
 		<TouchableOpacity onPress={onPressSearchItem}>
 			<View style={styles.card}>
-				<Image source={image === '../assets/food_placeholder.png' ? { uri: image } : require('../assets/food_placeholder.png')} style={styles.image} />
+				<Image source={image !== '../assets/food_placeholder.png' ? { uri: image } : require('../assets/food_placeholder.png')} style={styles.image} />
 				<Text style={{ fontFamily: 'FiraSansCondensed_600SemiBold', fontSize: 20, paddingTop: 10, paddingBottom: 5 }}>{itemName}</Text>
 			</View>
 		</TouchableOpacity>
