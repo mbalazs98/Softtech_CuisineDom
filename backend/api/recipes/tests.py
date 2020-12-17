@@ -2,6 +2,7 @@ from django.test import TestCase
 from .models import users, recipes, user_recipes, ingredients
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from recipes.authentication import EmailOrUsernameAuthBackend
 from django.test import Client
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
@@ -91,7 +92,7 @@ class LoginTestCase(TestCase):
 
         user_recipe.save()
 
-        response = c.get('/user/recipes')
+        response = c.get('/user/recipes/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b'[{"recipe_id": 1, "recipe_name": "test_recipe", "cooking_method": "cook", "image": "test_picture",'

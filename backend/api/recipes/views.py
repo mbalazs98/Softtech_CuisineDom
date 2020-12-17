@@ -104,7 +104,7 @@ def LoginPage(request, failed_login: str):
         username = body.get('username')
         password = body.get('password')
         try:
-            recipes_user = EmailOrUsernameAuthBackend.authenticate(request, username=username, password=password)
+            recipes_user = authenticate(request, username=username, password=password)
             if recipes_user is not None:
                 try:
                     token = Token.objects.create(user=recipes_user)
@@ -113,7 +113,7 @@ def LoginPage(request, failed_login: str):
                                  status=status.HTTP_400_BAD_REQUEST)
                 return JsonResponse({'message': 'login_succeeded', 'username': recipes_user.username, 'token': token.key})
             else:
-                return JsonResponse({'message': failed_login, 'error': 'Wrong password'},
+                return JsonResponse({'message': failed_login, 'error': 'Wrong password or username'},
                                     status=status.HTTP_400_BAD_REQUEST)
         except:
             return JsonResponse({'message': failed_login, 'error': 'No user with this username'},
