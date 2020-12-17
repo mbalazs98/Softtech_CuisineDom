@@ -65,9 +65,9 @@ const HomeScreen = ({ navigation }) => {
 		console.log('menu button')
 		const authDataJson = await initAuthToken();
 		if (Object.keys(user).length === 0 && user.constructor === Object) {
-			// fetch(`http://127.0.0.1:8000/user/`, {
 			let api = 'http://10.40.255.123:8000/user/'
-			fetch(api, {
+			fetch(`http://127.0.0.1:8000/user/`, {
+			//fetch(api, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -104,10 +104,11 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	function onPressSearchBtn() {
-		// fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
+		
 		let api = `http://10.40.255.123:8000/recipes/${stateQuery}/search`;
 		if(stateQuery.length > 0) {
-			fetch(api)
+			//fetch(api)
+			fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
 				console.log(data)
@@ -123,7 +124,7 @@ const HomeScreen = ({ navigation }) => {
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
-				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10, top: 5 }}>
+				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10 }}>
 					<Image source={require('../assets/menu_dots.png')} style={styles.menuDots} />
 				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />
@@ -233,7 +234,7 @@ const styles = StyleSheet.create({
 	menuDots: {
 		width: 70,
 		height: 70,
-		marginTop: 50
+		marginTop: 10
 	}
 
 })

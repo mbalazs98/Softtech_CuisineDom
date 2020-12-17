@@ -13,6 +13,32 @@ const Profile = ({ route, navigation }) => {
     function onPressEditBtn() {
         navigation.navigate('EditProfile')
     }
+	
+	const onPressFavBtn = async () => {
+		navigation.navigate('Favorites')
+		/*const authDataJson = await getAuthData();
+		let api = `http://10.40.255.123:8000/user/recipes/`;
+		
+		fetch(`http://127.0.0.1:8000/user/recipes/`, {
+		//fetch(api, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest',
+					'Authorization': 'Token ' + authDataJson.token
+				}
+		})
+		.then((response) => response.json())//.then(data => console.log(data))
+		.then(data => {
+			console.log(data)
+			navigation.navigate('Favorites', {
+				results: data
+			})
+			
+		})*/
+			
+    }
 
     function onPressBackToHome() {
         navigation.navigate('Home')
@@ -49,9 +75,9 @@ const Profile = ({ route, navigation }) => {
         console.log("OnLogout")
         const authDataJson = await getAuthData();
 
-        // fetch(`http://127.0.0.1:8000/logout/`, {
         let api = 'http://10.40.255.123:8000/logout/'
-        fetch(api, {
+        fetch(`http://127.0.0.1:8000/logout/`, {
+        //fetch(api, {
             method: 'POST',
             //credentials: 'same-origin',
             headers: {
@@ -96,6 +122,12 @@ const Profile = ({ route, navigation }) => {
                     <Text style={styles.recipeTime}>{user.email}</Text>
                 </View>
             </View>
+			<Button buttonStyle={styles.addBtn}
+                containerStyle={styles.addBtnContainer}
+                onPress={onPressFavBtn}
+                title="Favorites"
+                titleStyle={{ fontFamily: "FiraSansCondensed_400Regular" }}
+                accessibilityLabel="Favorites button" />
             <Button buttonStyle={styles.editBtn}
                 containerStyle={styles.editBtnContainer}
                 onPress={onPressEditBtn}
@@ -125,7 +157,7 @@ const styles = StyleSheet.create({
     },
     editBtnContainer: {
         position: 'absolute',
-        left: 150,
+        left: 140,
         top: 'auto',
         bottom: 50,
         borderRadius: 14,

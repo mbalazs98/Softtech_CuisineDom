@@ -290,7 +290,7 @@ def UserRecipePage(request):
 def DeleteUserRecipe(request):
     if request.method == 'POST':
         body = json.loads(request.body)
-        user_recipe_to_delete = get_object_or_404(user_recipes, id=body.get('id_to_delete'))
+        user_recipe_to_delete = get_object_or_404(user_recipes, recipe_id=body.get('id_to_delete'))
         user_recipe_to_delete.delete()
         return JsonResponse({'message': 'Recipe from user\'s favourites is deleted successfully.'})
 
@@ -301,11 +301,15 @@ def AddUserRecipe(request):
         body = json.loads(request.body)
         try:
             recipe = recipes.objects.get(recipe_id=body.get('recipe_id'))
+            print("Rec", recipe)
             favourite_recipe = user_recipes(recipe_id=recipe, users_id=request.user)
+            
             favourite_recipe.save()
+            print("Here")
             return JsonResponse({'message': 'Recipe successfully saved as user\'s favourite.'})
-        except:
-            return JsonResponse({'message': 'There is no recipe with the given id.'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'message': 'There is no recipe with the given id.'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
@@ -313,5 +317,6 @@ def IsUserFavouriteRecipe(request, recipe_id):
     try:
         user_recipes.objects.get(recipe_id_id=recipe_id, users_id_id=request.user.id)
         return JsonResponse({'is_favourite_recipe': 1})
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({'is_favourite_recipe': 0})
