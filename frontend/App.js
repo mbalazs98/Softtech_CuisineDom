@@ -27,7 +27,9 @@ import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
 
 import { RecipeProvider } from './components/RecipeContext';
+import { LogBox } from 'react-native';
 
+LogBox.ignoreAllLogs()
 const Stack = createStackNavigator();
 
 // const MyStack = () => {

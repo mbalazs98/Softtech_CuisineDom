@@ -123,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
 		<View style={styles.container}>
 			<ImageBackground source={require('../assets/bg.jpg')} style={styles.backgroundImage}>
 				<View style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} ></View>
-				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10, top: 5 }}>
+				<TouchableOpacity onPress={onPressMenu} style={{ position: 'absolute', left: 10, top: 0 }}>
 					<Image source={require('../assets/menu_dots.png')} style={styles.menuDots} />
 				</TouchableOpacity>
 				<Image source={require('../assets/logo2.png')} style={styles.image} />
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
 	menuDots: {
 		width: 70,
 		height: 70,
-		marginTop: 50
+		marginTop: 30
 	}
 
 })

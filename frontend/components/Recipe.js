@@ -55,7 +55,7 @@ const Recipe = ({ route, navigation }) => {
             <ScrollView style={styles.recipeContainer}>
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                     <View style={{ justifyContent: 'center' }}>
-                        <Image source={image === '../assets/food_placeholder.png' ? { uri: image } : require('../assets/food_placeholder.png')} style={styles.image} />
+                        <Image source={image !== '../assets/food_placeholder.png' ? { uri: image } : require('../assets/food_placeholder.png')} style={styles.image} />
                     </View>
                     <View style={styles.recipeMainInfo}>
                         <Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         paddingTop: 0,
         paddingBottom: 10,
-        width: 180,
+        width: 170,
         // backgroundColor: 'red'
     },
     recipeTime: {

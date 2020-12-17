@@ -177,6 +177,8 @@ def LogOut(request):
     request.user.auth_token.delete()
     return JsonResponse({'message': 'User logged out.'}, status=status.HTTP_200_OK)
     
+from gensim import models
+
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
 def RecipeID(request, recipe_id):
@@ -186,6 +188,8 @@ def RecipeID(request, recipe_id):
         return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         recipes_serializer = recipesSerializer(recipe)
+        model =  models.LdaModel.load('models/lda/lda.model')
+        print(model.print_topic(65, topn=20))
         return JsonResponse(recipes_serializer.data)
     elif request.method == 'PUT':
         recipe_data = JSONParser().parse(request)

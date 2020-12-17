@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
     editBtnContainer: {
         position: 'absolute',
-        left: 150,
+        left: 35,
         top: 'auto',
         bottom: 50,
         borderRadius: 14,
