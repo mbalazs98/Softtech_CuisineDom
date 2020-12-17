@@ -38,8 +38,8 @@ const Recipe = ({ route, navigation }) => {
 		if (fav === 0) {
 			let api = 'http://10.40.255.123:8000/user/add_recipe/';
 
-			//fetch(api, {
-			await fetch(`http://127.0.0.1:8000/user/add_recipe/`, {
+			fetch(api, {
+			// await fetch(`http://127.0.0.1:8000/user/add_recipe/`, {
 				method: 'POST',
 				body: JSON.stringify({
 					'recipe_id': route.params.recipeID
@@ -66,8 +66,8 @@ const Recipe = ({ route, navigation }) => {
 			
 			let api = 'http://10.40.255.123:8000/user/delete_recipe/';
 
-			//fetch(api, {
-			await fetch(`http://127.0.0.1:8000/user/delete_recipe/`, {
+			fetch(api, {
+			// await fetch(`http://127.0.0.1:8000/user/delete_recipe/`, {
 				method: 'POST',
 				body: JSON.stringify({
 					'id_to_delete': route.params.recipeID
@@ -96,8 +96,8 @@ const Recipe = ({ route, navigation }) => {
 		try {
 			const authDataJson = await getAuthData();
 			let api = `http://10.40.255.123:8000/user/is_fav/${route.params.recipeID}`
-            await fetch(`http://127.0.0.1:8000/user/is_fav/${route.params.recipeID}`, {
-			//await fetch(api, {
+            // await fetch(`http://127.0.0.1:8000/user/is_fav/${route.params.recipeID}`, {
+			await fetch(api, {
 				method: 'GET',
 				//credentials: 'same-origin',
 				headers: {

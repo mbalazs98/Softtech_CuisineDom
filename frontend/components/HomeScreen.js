@@ -66,8 +66,8 @@ const HomeScreen = ({ navigation }) => {
 		const authDataJson = await initAuthToken();
 		if (Object.keys(user).length === 0 && user.constructor === Object) {
 			let api = 'http://10.40.255.123:8000/user/'
-			fetch(`http://127.0.0.1:8000/user/`, {
-			//fetch(api, {
+			// fetch(`http://127.0.0.1:8000/user/`, {
+			fetch(api, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -107,8 +107,8 @@ const HomeScreen = ({ navigation }) => {
 		
 		let api = `http://10.40.255.123:8000/recipes/${stateQuery}/search`;
 		if(stateQuery.length > 0) {
-			//fetch(api)
-			fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
+			fetch(api)
+			// fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
 				console.log(data)

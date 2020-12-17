@@ -35,8 +35,8 @@ const Favorites = ({ navigation }) => {
 		const authDataJson = await getAuthData();
 		let api = `http://10.40.255.123:8000/user/recipes/`;
 		
-		await fetch(`http://127.0.0.1:8000/user/recipes/`, {
-		//fetch(api, {
+		// await fetch(`http://127.0.0.1:8000/user/recipes/`, {
+		fetch(api, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',

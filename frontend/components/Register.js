@@ -35,8 +35,8 @@ const Register = ({ navigation }) => {
             console.log(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))
             setStateMsg(manifest.debuggerHost.split(`:`).shift().concat(`:8000`))*/
         let api = 'http://10.40.255.123:8000/register/'
-        fetch('http://127.0.0.1:8000/register/', {
-        //fetch(api, {
+        // fetch('http://127.0.0.1:8000/register/', {
+        fetch(api, {
             method: 'POST',
             body: JSON.stringify({
                 'username': stateUsername,
