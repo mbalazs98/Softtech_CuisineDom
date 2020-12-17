@@ -53,15 +53,15 @@ const Recipe = ({ route, navigation }) => {
             </TouchableOpacity>
 
             <ScrollView style={styles.recipeContainer}>
-                <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-                <View style={{ justifyContent: 'center' }}>
-                    <Image source={{ uri: image }} style={styles.image} />
-                </View>
-                <View style={styles.recipeMainInfo}>
-                    <Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
-                    <Text style={styles.recipeTime}>Time to make: {prepTime}</Text>
-                    <Text style={styles.recipeTime}>{route.params.recipeServing}</Text>
-                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+                    <View style={{ justifyContent: 'center' }}>
+                        <Image source={image === '../assets/food_placeholder.png' ? { uri: image } : require('../assets/food_placeholder.png')} style={styles.image} />
+                    </View>
+                    <View style={styles.recipeMainInfo}>
+                        <Text style={styles.recipeTitle}>{route.params.recipeName}</Text>
+                        <Text style={styles.recipeTime}>Time to make: {prepTime}</Text>
+                        <Text style={styles.recipeTime}>{route.params.recipeServing}</Text>
+                    </View>
                 </View>
                 <View style={styles.recipeDescriptionContainer}>
                     <Text style={styles.recipeDescriptionTitle}>Ingredients</Text>
@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
         // paddingLeft: 20,
         // paddingRight: 20,
         // paddingTop: 30,
-        
+
         flexDirection: 'column',
-        
+
         // backgroundColor: 'green'
     },
     image: {

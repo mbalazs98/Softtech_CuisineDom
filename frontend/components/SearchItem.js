@@ -85,10 +85,12 @@ const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }
 			recipeDescription: itemDescription
 		})*/
 	}
+
+
 	return (
 		<TouchableOpacity onPress={onPressSearchItem}>
 			<View style={styles.card}>
-				<Image source={{uri: image}} style={styles.image} />
+				<Image source={image === '../assets/food_placeholder.png' ? { uri: image } : require('../assets/food_placeholder.png')} style={styles.image} />
 				<Text style={{ fontFamily: 'FiraSansCondensed_600SemiBold', fontSize: 20, paddingTop: 10, paddingBottom: 5 }}>{itemName}</Text>
 			</View>
 		</TouchableOpacity>
