@@ -33,24 +33,29 @@ const EnterIngredients = ({ route, navigation }) => {
     //		.then((response) => response.json())
     //DATA = JSON.parse(qu)
     useEffect(() => {
-        if (DATA.length == 0)
-            fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+        if (DATA.length == 0) {
+            // fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+
+            let api = 'http://10.40.255.123:8000/recipes/get_ingredients';
+            fetch(api)
                 .then((response) => response.json())
                 .then(data => { DATA = data; console.log('data loaded!'); })
+        }
+
     });
 
     function onSearchChange(e) {
         // TO BE IMPLEMENTED WITH CASE INSENSITIVE
 
         // console.log(e.target.value)
-        setSearchInputValue(e.target.value)
+        // setSearchInputValue(e.target.value)
         suggestedDATA = [];
         setSuggestedIngredients(suggestedDATA)
-        if (e.target.value.length > 0) {
+        if (searchInputValue.length > 0) {
 
             for (let i = 0; i < DATA.length && suggestedDATA.length < 5; i++) {
                 // if(DATA[i].title.match(`/[a-z, A-Z, 0-9]*/i${e.target.value}/[a-z, A-Z, 0-9]*/i`)) {
-                if (DATA[i] && DATA[i]['ingredient_name'].match(`[a-z, A-Z, 0-9]*${e.target.value.toLocaleLowerCase()}[a-z, A-Z, 0-9]*`)) {
+                if (DATA[i] && DATA[i]['ingredient_name'].match(`[a-z, A-Z, 0-9]*${searchInputValue.toLocaleLowerCase()}[a-z, A-Z, 0-9]*`)) {
                     suggestedDATA.push(DATA[i])
                     setSuggestedIngredients(suggestedDATA)
                 }
@@ -82,8 +87,8 @@ const EnterIngredients = ({ route, navigation }) => {
         selectedTmp = selectedTmp.filter(item => item.ingredient_id != id)
         console.log('2 addition')
         setSelectedIngredients(selectedTmp);
-								
-										
+
+
         selectedDATA = new Set();
         selectedTmp.forEach(item => {
             selectedDATA.add(item['ingredient_id'])
@@ -114,8 +119,10 @@ const EnterIngredients = ({ route, navigation }) => {
 
     function onPressFindBtn() {
         console.log(selectedIngredients.length)
-        if (selectedIngredients.length > 0)
-            fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+        if (selectedIngredients.length > 0) {
+            // fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+            let api = 'http://10.40.255.123:8000/recipes/ingredients'
+            fetch(api, {
                 method: 'POST',
                 body: JSON.stringify({
                     'ingredient': selectedIngredients
@@ -127,14 +134,6 @@ const EnterIngredients = ({ route, navigation }) => {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
-		  
-												
-						   
-								 
-											   
-													
-								 
-				  
             })
                 .then((response) => response.json())
                 .then(data => {
@@ -144,6 +143,9 @@ const EnterIngredients = ({ route, navigation }) => {
                         results: data
                     })
                 })
+        }
+
+
     }
 
     function onPressBackToHome() {
@@ -155,11 +157,12 @@ const EnterIngredients = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backToSearch} onPress={onPressBackToHome}>
-                <Image source={require('../assets/arrow.svg')} style={styles.icon} />
+                <Image source={require('../assets/arrow.png')} style={styles.icon} />
                 <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back to Home</Text>
             </TouchableOpacity>
             <Text style={{ marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Enter your ingredients</Text>
             <Input
+                onChangeText={(val) => setSearchInputValue(val)}
                 onChange={onSearchChange}
                 inputContainerStyle={styles.searchInputContainer}
                 inputStyle={styles.searchInput}
