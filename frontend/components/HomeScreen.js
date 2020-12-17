@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { TouchableOpacity, View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { TouchableOpacity, View, ScrollView, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Button, Input } from 'react-native-elements';
@@ -55,9 +55,8 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	function resetQueryProps() {
-		let searchInputTmp = searchInputRef;
-		searchInputTmp.current.input.value = '';
-		setSearchInputRef(searchInputTmp);
+		console.log('reset query props')
+		searchInputRef.current.input.clear()
 		updateUser({});
 		setStateQuery('');
 	}
@@ -95,7 +94,7 @@ const HomeScreen = ({ navigation }) => {
 				} else {
 					console.log("ERR")
 				}
-			})
+			}).catch(err => console.log('here', err))
 		} else {
 			navigation.navigate('Profile', {
 				resetQuery: resetQueryProps
@@ -104,14 +103,11 @@ const HomeScreen = ({ navigation }) => {
 		}
 	}
 
-	function onFocusSearchBtn() {
-		
-	}
-
 	function onPressSearchBtn() {
 		// fetch(`http://127.0.0.1:8000/recipes/${stateQuery}/search`)
-		let api = `http://10.40.255.123:8000/recipes/${stateQuery}/search`
-		fetch(api)
+		let api = `http://10.40.255.123:8000/recipes/${stateQuery}/search`;
+		if(stateQuery.length > 0) {
+			fetch(api)
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
 				console.log(data)
@@ -120,47 +116,8 @@ const HomeScreen = ({ navigation }) => {
 					results: data
 				})
 			})
-		/*fetch(`http://127.0.0.1:5000/v1/recipes/${stateQuery}`)
-			.then((response) => response.json())//.then(data => console.log(data))
-			.then(data => {
-				// console.log(data.results)
-				navigation.navigate('Search', {
-					searchQuery: stateQuery,
-					results: data.results
-				})
-			})*/
-
+		}		
 	}
-
-	/*const onPressLogout = async () => {
-		console.log("OnLogout")
-		const authDataJson = await initAuthToken();
-		console.log(authDataJson.token);
-		fetch(`http://127.0.0.1:8000/logout/`, {
-			method: 'POST',
-			//credentials: 'same-origin',
-			headers: {
-			//"X-CSRFToken": Cookies.get("csrftoken"),
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-			'X-Requested-With': 'XMLHttpRequest',
-			'Authorization': 'Token '+authDataJson.token 
-			}
-		}).then(data => {
-			status = data.status;
-			return data.json()
-		}).then(data=> {
-			if(status == 200) {
-				console.log("success")
-				console.log(data);
-				removeAuthToken();
-				navigation.navigate('Login')
-			    
-			} else {
-				console.log("ERR")
-			}
-		})
-	}*/
 
 	return (
 		<View style={styles.container}>
@@ -184,7 +141,7 @@ const HomeScreen = ({ navigation }) => {
 						inputStyle={styles.searchInput}
 						containerStyle={styles.searchContainer}
 						// placeholder="Search Recipes"
-						onFocus={onFocusSearchBtn}
+						// onFocus={onFocusSearchBtn}
 						label=""
 						labelStyle={stateStyles.labelStyle}
 						accessibilityLabel="Search Recipes Input" />

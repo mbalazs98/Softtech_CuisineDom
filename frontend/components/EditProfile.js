@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 
-import { Form, View, Text, StyleSheet, ScrollView} from 'react-native';
+import { Form, View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import RecipeContext from './RecipeContext';
 // import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -121,71 +121,73 @@ const EditProfile = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.backgroundImage}>
-            <Text style={{ marginTop: 25, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Edit Profile</Text>
-            <ScrollView style={styles.formContainer}>
-                <Text style={styles.errorMsg}>{stateMsg}</Text>
-                <Input
-                    onChangeText={(val) => setNewUsername(val)}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    //placeholder="Enter your new username"
-                    label="Username"
-                    accessibilityLabel="Username Input" />
-                <Text style={{ width: 260, height: 20 }}></Text>
-                <Input
-                    onChangeText={(val) => setOldPassword(val)}
-                    //inputContainerStyle={styles.searchInputContainer}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    secureTextEntry={true}
-                    //placeholder="Enter your old password"
-                    label="Old Password"
-                    //labelStyle={stateStyles.labelStyle}
-                    accessibilityLabel="Old Password Input" />
-                <Text style={{ width: 260, height: 20 }}></Text>
-                <Input
-                    onChangeText={(val) => setNewPassword(val)}
-                    //inputContainerStyle={styles.searchInputContainer}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    //placeholder="Enter your new password"
-                    label="New Password"
-                    secureTextEntry={true}
-                    //labelStyle={stateStyles.labelStyle}
-                    accessibilityLabel="New Password Input" />
-                <Input
-                    onChangeText={(val) => setNewPasswordConfirm(val)}
-                    //inputContainerStyle={styles.searchInputContainer}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    //placeholder="Enter your new password"
-                    label="Confirm Password"
-                    secureTextEntry={true}
-                    //labelStyle={stateStyles.labelStyle}
-                    accessibilityLabel="Confirm Password Input" />
-                <Button
-                    buttonStyle={styles.saveBtn}
-                    onPress={onPressUploadImage}
-                    title="Choose Image"
-                    accessibilityLabel="Choose Image" />
-                <Text style={{ width: 260, height: 20 }}></Text>
+        <ScrollView>
+            <View style={styles.backgroundImage}>
+                <Text style={{ marginTop: 75, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Edit Profile</Text>
+                <View style={styles.formContainer}>
+                    <Text style={styles.errorMsg}>{stateMsg}</Text>
+                    <Input
+                        onChangeText={(val) => setNewUsername(val)}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        //placeholder="Enter your new username"
+                        label="Username"
+                        accessibilityLabel="Username Input" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
+                    <Input
+                        onChangeText={(val) => setOldPassword(val)}
+                        //inputContainerStyle={styles.searchInputContainer}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        secureTextEntry={true}
+                        //placeholder="Enter your old password"
+                        label="Old Password"
+                        //labelStyle={stateStyles.labelStyle}
+                        accessibilityLabel="Old Password Input" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
+                    <Input
+                        onChangeText={(val) => setNewPassword(val)}
+                        //inputContainerStyle={styles.searchInputContainer}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        //placeholder="Enter your new password"
+                        label="New Password"
+                        secureTextEntry={true}
+                        //labelStyle={stateStyles.labelStyle}
+                        accessibilityLabel="New Password Input" />
+                    <Input
+                        onChangeText={(val) => setNewPasswordConfirm(val)}
+                        //inputContainerStyle={styles.searchInputContainer}
+                        inputStyle={styles.searchInput}
+                        containerStyle={styles.searchContainer}
+                        //placeholder="Enter your new password"
+                        label="Confirm Password"
+                        secureTextEntry={true}
+                        //labelStyle={stateStyles.labelStyle}
+                        accessibilityLabel="Confirm Password Input" />
+                    <Button
+                        buttonStyle={styles.saveBtn}
+                        onPress={onPressUploadImage}
+                        title="Choose Image"
+                        accessibilityLabel="Choose Image" />
+                    <Text style={{ width: 260, height: 20 }}></Text>
 
-                <View>
-                    <Button buttonStyle={styles.saveBtn}
-                        onPress={onPressSave}
-                        title="Save"
-                        titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
-                        accessibilityLabel="Save Button" />
-                    <Button buttonStyle={styles.cancelBtn}
-                        onPress={onPressCancel}
-                        title="Cancel"
-                        titleStyle={{ color: 'darkblue', fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
-                        accessibilityLabel="Cancel Button" />
+                    <View>
+                        <Button buttonStyle={styles.saveBtn}
+                            onPress={onPressSave}
+                            title="Save"
+                            titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
+                            accessibilityLabel="Save Button" />
+                        <Button buttonStyle={styles.cancelBtn}
+                            onPress={onPressCancel}
+                            title="Cancel"
+                            titleStyle={{ color: 'darkblue', fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
+                            accessibilityLabel="Cancel Button" />
+                    </View>
+
                 </View>
-
-            </ScrollView>
-        </View>
+            </View>
+        </ScrollView>
     )
 };
 
