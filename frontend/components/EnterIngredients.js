@@ -34,10 +34,10 @@ const EnterIngredients = ({ route, navigation }) => {
     //DATA = JSON.parse(qu)
     useEffect(() => {
         if (DATA.length == 0) {
-            // fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
 
             let api = 'http://10.40.255.123:8000/recipes/get_ingredients';
-            fetch(api)
+            fetch(`http://127.0.0.1:8000/recipes/get_ingredients`)
+            //fetch(api)
                 .then((response) => response.json())
                 .then(data => { DATA = data; console.log('data loaded!'); })
         }
@@ -120,9 +120,9 @@ const EnterIngredients = ({ route, navigation }) => {
     function onPressFindBtn() {
         console.log(selectedIngredients.length)
         if (selectedIngredients.length > 0) {
-            // fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
-            let api = 'http://10.40.255.123:8000/recipes/ingredients'
-            fetch(api, {
+            let api = 'http://10.40.255.123:8000/recipes/ingredients';
+            fetch(`http://127.0.0.1:8000/recipes/ingredients`, {
+            //fetch(api, {
                 method: 'POST',
                 body: JSON.stringify({
                     'ingredient': selectedIngredients

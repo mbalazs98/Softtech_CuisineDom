@@ -16,6 +16,7 @@ import string
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
 import base64
 from django.core.files.base import ContentFile
+from recipes.authentication import EmailOrUsernameAuthBackend
 from django.conf import settings
 
 @Producer(_context='login_failed')
@@ -58,7 +59,7 @@ def RegisterPage(request, failed_register: str, *args, **kwargs):
                                 status=status.HTTP_400_BAD_REQUEST)
 
         for char in body.get('username'):
-            if char not in WHITELIST:
+            if char not in WHITELIST or char == '@':
                 return JsonResponse({'message': failed_register, 'error': 'Invalid character in username.'},
                                     status=status.HTTP_400_BAD_REQUEST)
 
@@ -103,16 +104,14 @@ def LoginPage(request, failed_login: str):
         username = body.get('username')
         password = body.get('password')
         try:
-            print(username, password)
-            user = authenticate(request, username=username, password=password)
-            recipes_user = users.objects.get(username=username)
-            if user is not None:
+            recipes_user = EmailOrUsernameAuthBackend.authenticate(request, username=username, password=password)
+            if recipes_user is not None:
                 try:
                     token = Token.objects.create(user=recipes_user)
                 except Exception as e:
                     return JsonResponse({'message': failed_login, 'error': 'User already logged in'},
                                  status=status.HTTP_400_BAD_REQUEST)
-                return JsonResponse({'message': 'login_succeeded', 'username': username, 'token': token.key})
+                return JsonResponse({'message': 'login_succeeded', 'username': recipes_user.username, 'token': token.key})
             else:
                 return JsonResponse({'message': failed_login, 'error': 'Wrong password'},
                                     status=status.HTTP_400_BAD_REQUEST)
@@ -170,8 +169,7 @@ def SearchRecipeByIngredients(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def LogOut(request):
-    
-    print(request.user)
+
     token = Token.objects.get(user_id=request.user.id)
     token.delete()
     request.user.auth_token.delete()
@@ -226,7 +224,7 @@ def SearchRecipeByName(request, recipe_name: string):
     return JsonResponse({'message': 'The recipe does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['GET','POST','DELETE'])
+@api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def UsersPage(request):
     if request.method == 'GET':
@@ -293,11 +291,36 @@ def UserRecipePage(request):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
-def DeleteUserRecipe(request, id_to_delete):
+def DeleteUserRecipe(request):
     if request.method == 'POST':
-        user_recipe_to_delete = get_object_or_404(user_recipes, id=id_to_delete)
+        body = json.loads(request.body)
+        user_recipe_to_delete = get_object_or_404(user_recipes, recipe_id=body.get('id_to_delete'))
         user_recipe_to_delete.delete()
-        return JsonResponse({'message': 'Recipe from user database is deleted successfully.'})
-    else:
-        return JsonResponse({'message': 'Deletion failed', 'error': 'post method should be used'},
-                            status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': 'Recipe from user\'s favourites is deleted successfully.'})
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def AddUserRecipe(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        try:
+            recipe = recipes.objects.get(recipe_id=body.get('recipe_id'))
+            print("Rec", recipe)
+            favourite_recipe = user_recipes(recipe_id=recipe, users_id=request.user)
+            
+            favourite_recipe.save()
+            print("Here")
+            return JsonResponse({'message': 'Recipe successfully saved as user\'s favourite.'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'message': 'There is no recipe with the given id.'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def IsUserFavouriteRecipe(request, recipe_id):
+    try:
+        user_recipes.objects.get(recipe_id_id=recipe_id, users_id_id=request.user.id)
+        return JsonResponse({'is_favourite_recipe': 1})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'is_favourite_recipe': 0})

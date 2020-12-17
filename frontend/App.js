@@ -25,6 +25,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
+import Favorites from './components/Favorites';
 
 import { RecipeProvider } from './components/RecipeContext';
 import { LogBox } from 'react-native';
@@ -96,6 +97,7 @@ const App = () => {
 				<Stack.Screen name="Recipe" component={Recipe} options={{ headerShown: false }} />
 				<Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
 				<Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
+				<Stack.Screen name="Favorites" component={Favorites} options={{ headerShown: false }} />
 			</Stack.Navigator>
 		</NavigationContainer>
 		</RecipeProvider>
