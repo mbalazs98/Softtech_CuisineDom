@@ -249,9 +249,13 @@ def UsersSettingsChange(request):
 
             modification_list.append('profile_picture')
         if body.get('username') != "":
-            user.username = body.get('username')
-            user.save()
-            modification_list.append('username')
+            try:
+                tmp_u = users.objects.get(username=body.get('username'))
+                return JsonResponse({'message': 'Username already exists!'}, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                user.username = body.get('username')
+                user.save()
+                modification_list.append('username')
         if body.get('password') != "":
             if user.check_password(body.get('old_password')):
                 user.set_password(body.get('password'))

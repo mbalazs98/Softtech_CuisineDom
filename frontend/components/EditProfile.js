@@ -180,7 +180,7 @@ const EditProfile = ({ navigation }) => {
                     <Button buttonStyle={styles.cancelBtn}
                         onPress={onPressCancel}
                         title="Cancel"
-                        titleStyle={{ fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
+                        titleStyle={{ color: 'darkblue', fontFamily: "FiraSansCondensed_600SemiBold", fontSize: 20 }}
                         accessibilityLabel="Cancel Button" />
                 </View>
 

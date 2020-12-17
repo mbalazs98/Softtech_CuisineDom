@@ -100,7 +100,7 @@ const Profile = ({ route, navigation }) => {
                 containerStyle={styles.editBtnContainer}
                 onPress={onPressEditBtn}
                 title="Edit profile"
-                titleStyle={{ fontFamily: "FiraSansCondensed_400Regular" }}
+                titleStyle={{ color: 'darkblue', fontFamily: "FiraSansCondensed_400Regular" }}
                 accessibilityLabel="Edit profile button" />
         </View>
 
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
         top: 'auto',
         bottom: 50,
         borderRadius: 14,
+        color: 'red'
         //boxShadow: '0px 40px 52px -40px rgba(0,0,0,0.4), 0px 30px 70px rgba(0,0,0,0.3)'
 
     },
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: '#b8cdfc',
-
+        color: 'red'
     },
     backToHome: {
         // flex: 1,
