@@ -68,16 +68,39 @@ const SearchItem = ({ itemID, itemName, itemThumb, itemDescription, navigation }
 		})
 			.then((response) => response.json())//.then(data => console.log(data))
 			.then(data => {
+				
 				console.log(data)
-				navigation.navigate('Recipe', {
-					recipeID: data['recipe_id'],
-					recipeName: data['recipe_name'],
-					recipeThumb: data['image'],
-					recipeTime: data['prep_time'],
-					recipeServing: data['serving'],
-					recipeIngredients: data['string_ingredients'] != undefined ? data['string_ingredients'] : ' No ingredients available. ',
-					recipeDescription: data['cooking_method'] != undefined ? data['cooking_method'] : '  No description available.  '
-				})
+
+				try {
+					let api = `http://10.40.255.123:8000/recipes/${itemID}/recommend/`
+					// await fetch(`http://127.0.0.1:8000/user/is_fav/${route.params.recipeID}`, {
+					fetch(api, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Accept': 'application/json',
+							'X-Requested-With': 'XMLHttpRequest',
+							'Authorization': 'Token ' + authDataJson.token
+						}
+					})
+						.then((response) => response.json())
+						.then(data2 => {
+							navigation.navigate('Recipe', {
+								recipeID: data['recipe_id'],
+								recipeName: data['recipe_name'],
+								recipeThumb: data['image'],
+								recipeTime: data['prep_time'],
+								recipeServing: data['serving'],
+								recipeIngredients: data['string_ingredients'] != undefined ? data['string_ingredients'] : ' No ingredients available. ',
+								recipeDescription: data['cooking_method'] != undefined ? data['cooking_method'] : '  No description available.  ',
+								suggestedRecipes: data2
+							})
+						})
+				} catch (error) {
+					console.log('suggestions error', error)
+				}
+
+				
 			})
 		/*navigation.navigate('Recipe', {
 			recipeID: itemID,

@@ -2,123 +2,149 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
+import SearchItem from './SearchItem';
 
 
 const Recipe = ({ route, navigation }) => {
     var x = 1
     const [image, setImage] = useState('../assets/food_placeholder.png');
     const [prepTime, setPrepTime] = useState("");
-	const [fav, setFav] = useState(0);
+    const [fav, setFav] = useState(0);
+    const [suggestions, setSuggestions] = useState([]);
+    var isRecommendationsFetched = false;
 
-	const getAuthData = async () => {
-		try {
-			const authData = await AsyncStorage.getItem('authentication_data');
-			if (authData !== null) {
-				console.log(authData);
-				const authDataJson = JSON.parse(authData);
-				return authDataJson;
-			}
-			else {
-				navigation.navigate('Login')
-			}
-		}
-		catch (error) {
-			console.log(error);
-		}
-	}
-	
+    const getAuthData = async () => {
+        try {
+            const authData = await AsyncStorage.getItem('authentication_data');
+            if (authData !== null) {
+                console.log(authData);
+                const authDataJson = JSON.parse(authData);
+                return authDataJson;
+            }
+            else {
+                navigation.navigate('Login')
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     function onPressBackToSearch() {
         //navigation.navigate('Search')
-		navigation.goBack();
+        navigation.goBack();
 
     }
-	
-	const onPressFav = async () => {
-		const authDataJson = await getAuthData();
-		if (fav === 0) {
-			let api = 'http://10.40.255.123:8000/user/add_recipe/';
 
-			fetch(api, {
-			// await fetch(`http://127.0.0.1:8000/user/add_recipe/`, {
-				method: 'POST',
-				body: JSON.stringify({
-					'recipe_id': route.params.recipeID
-				}),
-				headers: {
-					'Content-Type': 'application/json',
-					'Accept': 'application/json',
-					'X-Requested-With': 'XMLHttpRequest',
-					'Authorization': 'Token ' + authDataJson.token
-				}
-			}).then(data => {
-				status = data.status;
-				console.log(status)
-				return data.json()
-			}).then(data => {
-				if (status == 200) {
-					setFav(1);
-					console.log(data)
-				}
-			}).catch(err => console.log(err))
-			
-		}
-		else {
-			
-			let api = 'http://10.40.255.123:8000/user/delete_recipe/';
+    const onPressFav = async () => {
+        const authDataJson = await getAuthData();
+        if (fav === 0) {
+            let api = 'http://10.40.255.123:8000/user/add_recipe/';
 
-			fetch(api, {
-			// await fetch(`http://127.0.0.1:8000/user/delete_recipe/`, {
-				method: 'POST',
-				body: JSON.stringify({
-					'id_to_delete': route.params.recipeID
-				}),
-				headers: {
-					'Content-Type': 'application/json',
-					'Accept': 'application/json',
-					'X-Requested-With': 'XMLHttpRequest',
-					'Authorization': 'Token ' + authDataJson.token
-				}
-			}).then(data => {
-				status = data.status;
-				return data.json()
-			}).then(data => {
-				if (status == 200) {
-					setFav(0);
-				}
-			}).catch(err => console.log(err))
-			
-		}
-	}
-	
-	
+            fetch(api, {
+                // await fetch(`http://127.0.0.1:8000/user/add_recipe/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    'recipe_id': route.params.recipeID
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': 'Token ' + authDataJson.token
+                }
+            }).then(data => {
+                status = data.status;
+                console.log(status)
+                return data.json()
+            }).then(data => {
+                if (status == 200) {
+                    setFav(1);
+                    console.log(data)
+                }
+            }).catch(err => console.log(err))
 
-	const isFav = async () => {
-		try {
-			const authDataJson = await getAuthData();
-			let api = `http://10.40.255.123:8000/user/is_fav/${route.params.recipeID}`
+        }
+        else {
+
+            let api = 'http://10.40.255.123:8000/user/delete_recipe/';
+
+            fetch(api, {
+                // await fetch(`http://127.0.0.1:8000/user/delete_recipe/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    'id_to_delete': route.params.recipeID
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': 'Token ' + authDataJson.token
+                }
+            }).then(data => {
+                status = data.status;
+                return data.json()
+            }).then(data => {
+                if (status == 200) {
+                    setFav(0);
+                }
+            }).catch(err => console.log(err))
+
+        }
+    }
+
+
+    const getSuggestions = async () => {
+        try {
+            const authDataJson = await getAuthData();
+            let api = `http://10.40.255.123:8000/recipes/${route.params.recipeID}/recommend/`
             // await fetch(`http://127.0.0.1:8000/user/is_fav/${route.params.recipeID}`, {
-			await fetch(api, {
-				method: 'GET',
-				//credentials: 'same-origin',
-				headers: {
-					//"X-CSRFToken": Cookies.get("csrftoken"),
-					'Content-Type': 'application/json',
-					'Accept': 'application/json',
-					'X-Requested-With': 'XMLHttpRequest',
-					'Authorization': 'Token ' + authDataJson.token
-				}
-			})
-				.then((response) => response.json())//.then(data => console.log(data))
-				.then(data => {
-					setFav(data['is_favourite_recipe']);
-				})
+            await fetch(api, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': 'Token ' + authDataJson.token
+                }
+            })
+                .then((response) => response.json())
+                .then(data => {
+                    setSuggestions(data);
+                    isRecommendationsFetched = true;
+                })
+        } catch (error) {
+            console.log('suggestions error', error)
+        }
+    }
+
+    const isFav = async () => {
+        try {
+            const authDataJson = await getAuthData();
+            let api = `http://10.40.255.123:8000/user/is_fav/${route.params.recipeID}`
+            // await fetch(`http://127.0.0.1:8000/user/is_fav/${route.params.recipeID}`, {
+            await fetch(api, {
+                method: 'GET',
+                //credentials: 'same-origin',
+                headers: {
+                    //"X-CSRFToken": Cookies.get("csrftoken"),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': 'Token ' + authDataJson.token
+                }
+            })
+                .then((response) => response.json())//.then(data => console.log(data))
+                .then(data => {
+                    setFav(data['is_favourite_recipe']);
+                })
         }
         catch (error) {
             console.log(error);
             setFav(0);
         }
-	}
-	
+    }
+
     function validPrepTime() {
         //console.log(route.params.recipeTime.substring(route.params.recipeTime.length-7));
         if (route.params.recipeTime.substring(route.params.recipeTime.length - 7) == "minutes") {
@@ -132,10 +158,10 @@ const Recipe = ({ route, navigation }) => {
             await fetch(url)
                 .then(res => {
                     if (res.status == 200 && !res.url.includes('not-available')) {
-						setImage(url)
-					} else {
-						setImage('../assets/food_placeholder.png');			
-					}
+                        setImage(url)
+                    } else {
+                        setImage('../assets/food_placeholder.png');
+                    }
                 })
             //.catch(err=>{setImage('../assets/food_placeholder.png') })
         }
@@ -149,21 +175,22 @@ const Recipe = ({ route, navigation }) => {
         React.useCallback(() => {
             checkImageURL(route.params.recipeThumb);
             validPrepTime();
-			isFav();
+            isFav();
+            
         }));
 
     return (
 
         <View style={styles.container}>
-			<View>
-				<TouchableOpacity style={styles.backToSearch} onPress={onPressBackToSearch}>
-					<Image source={require('../assets/arrow.png')} style={styles.icon} />
-					<Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back to search results</Text>
-				</TouchableOpacity>
-				<TouchableOpacity onPress={onPressFav} style={{ position: 'absolute', right: 10 }}>
-					<Image source={fav === 1 ? require('../assets/fav_yes.png') : require('../assets/fav_no.png')} style={styles.icon} />
-				</TouchableOpacity>
-			</View>
+            <View>
+                <TouchableOpacity style={styles.backToSearch} onPress={onPressBackToSearch}>
+                    <Image source={require('../assets/arrow.png')} style={styles.icon} />
+                    <Text style={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: 26, fontFamily: 'FiraSansCondensed_400Regular' }}>Back to search results</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressFav} style={{ position: 'absolute', right: 10 }}>
+                    <Image source={fav === 1 ? require('../assets/fav_yes.png') : require('../assets/fav_no.png')} style={styles.icon} />
+                </TouchableOpacity>
+            </View>
 
             <ScrollView style={styles.recipeContainer}>
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -185,7 +212,16 @@ const Recipe = ({ route, navigation }) => {
                     <Text style={styles.recipeDescriptionTitle}>Instructions</Text>
                     <Text style={styles.recipeDescriptionText}>{route.params.recipeDescription.slice(2, -2).split(/', '|", "|', "|", '/g).map((word) => x++ + ". " + word).join('\n')}</Text>
                 </View>
+                <View>
+                    <Text style={{ marginTop: 50, marginBottom: 35, color: 'black', fontSize: 26, fontFamily: 'FiraSansCondensed_600SemiBold' }}>Recommended Recipes</Text>
+                        <View style={styles.itemsContainer}>
+                            {route.params.suggestedRecipes.map((value, index) => {
+                                return <SearchItem itemID={value['recipe_id']} itemName={value['recipe_name']} itemThumb={value['image']} itemDescription={value['cooking_method']} navigation={navigation} />
+                            })}
+                        </View>
+                </View>
             </ScrollView>
+
         </View>
     )
 };
@@ -196,6 +232,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 25,
         paddingTop: 50
+    },
+    itemsContainer: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        //flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignContent: 'flex-start',
     },
     backToSearch: {
         // flex: 1,

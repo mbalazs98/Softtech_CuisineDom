@@ -4,8 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 class tags(models.Model):
     tag_id = models.AutoField(primary_key=True)
-    tag_name = models.CharField(max_length=50, unique=True) 
-
+    tag_name = models.CharField(max_length=50, unique=True)
 
 class ingredients(models.Model):
     ingredient_id = models.AutoField(primary_key=True)
@@ -27,7 +26,12 @@ class recipes(models.Model):
     string_ingredients = models.TextField(null=True)
     prep_time = models.TextField(null=True)
     serving = models.TextField(null=True)
-    
+
+
+class recipe_topic(models.Model):
+    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE)
+    topic_id = models.IntegerField()
+
 class recipe_cuisines(models.Model):
     recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE)
     cuisine_id = models.ForeignKey(cuisines, on_delete=models.CASCADE)

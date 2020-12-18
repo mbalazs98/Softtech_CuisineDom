@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status
 from rest_framework.parsers import JSONParser
 from recipes.serializers import usersSerializer, recipesSerializer, ingredientsSerializer
-from .models import users, recipes, user_recipes, ingredients, recipe_ingredients
+from .models import users, recipes, user_recipes, ingredients, recipe_ingredients, tags, recipe_tags, recipe_topic
 from .forms import UsersRegisterForm
 from django.contrib.auth import authenticate, login, checks
 from rest_framework.decorators import api_view, permission_classes, parser_classes
@@ -178,6 +178,7 @@ def LogOut(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
 def RecipeID(request, recipe_id):
+    
     try:
         recipe = recipes.objects.get(recipe_id=recipe_id)
     except recipes.DoesNotExist:
@@ -196,7 +197,21 @@ def RecipeID(request, recipe_id):
         recipe.delete()
         return JsonResponse({'message': 'Recipe was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
+import random
 
+@api_view(['GET'])
+# @permission_classes((IsAuthenticated,))
+def GetSuggestions(request, recipe_id):
+    if request.method == 'GET':
+        topic = recipe_topic.objects.get(recipe_id=recipe_id)
+        suggestions_ids = sorted(recipe_topic.objects.filter(topic_id=topic.topic_id).values_list('recipe_id', flat=True), key=lambda x: random.random())[:2]
+        
+        user_recipes_query_set = recipes.objects.filter(recipe_id__in=suggestions_ids)
+        serialized_user_recipes = recipesSerializer(user_recipes_query_set, many=True)
+
+        return JsonResponse(serialized_user_recipes.data, safe=False)
+
+        
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def New(request):

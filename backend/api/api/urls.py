@@ -44,6 +44,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('recipes/ingredients', views.SearchRecipeByIngredients),
     path('recipes/<recipe_id>/recipeID', views.RecipeID),
+    path('recipes/<recipe_id>/recommend/', views.GetSuggestions),
     path('recipes/new', views.New),
     path('recipes/<recipe_name>/search', views.SearchRecipeByName),
     path('recipes/get_ingredients', views.GetIngredients)
